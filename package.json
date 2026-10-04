@@ -1,0 +1,18 @@
+{
+  "name": "quantact-partners-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Quantact Partners website and case-study build",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-case-studies.mjs",
+    "serve": "python3 -m http.server 8000"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0",
+    "marked": "^12.0.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

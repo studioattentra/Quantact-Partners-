@@ -1,0 +1,43 @@
+# Rebuilds the case-study pages whenever content changes and once a day
+# (so posts scheduled with a future date are published on time). The
+# generated files are committed back to the branch, so any static host
+# that serves the repository will pick them up.
+
+name: Build case studies
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "content/**"
+      - "templates/**"
+      - "scripts/**"
+  schedule:
+    - cron: "15 6 * * *"   # 06:15 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Commit generated pages
+        run: |
+          git config user.name "quantact-site-bot"
+          git config user.email "site-bot@users.noreply.github.com"
+          git add case-studies sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "Build case studies"
+            git push
+          fi

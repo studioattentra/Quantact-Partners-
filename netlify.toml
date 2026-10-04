@@ -1,0 +1,17 @@
+# Netlify build settings (recommended host for the content admin).
+# Netlify runs the build on every commit, including commits made from /admin/.
+[build]
+  command = "npm ci && npm run build"
+  publish = "."
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Rebuild once a day so posts scheduled with a future date go live.
+# Set this up as a Netlify "Build hook" and trigger it from the GitHub Action,
+# or use the schedule in .github/workflows/case-studies.yml.
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex"

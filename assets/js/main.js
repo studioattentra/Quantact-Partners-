@@ -13,11 +13,12 @@
   const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
   /* ------------------------------------------------ loader */
-  document.body.classList.add('is-loading');
   const loader = $('#loader');
   const heroTitle = $('.hero__title');
+  if (loader) document.body.classList.add('is-loading');
 
   function finishLoading() {
+    if (!loader) return;
     loader.classList.add('is-done');
     document.body.classList.remove('is-loading');
     heroTitle && heroTitle.classList.add('is-in');
@@ -36,7 +37,9 @@
     const wait = Math.max(0, minimum - (performance.now() - started));
     setTimeout(finishLoading, wait);
   };
-  if (document.fonts && document.fonts.ready) {
+  if (!loader) {
+    // sub-pages: no intro, reveal everything in view straight away
+  } else if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(ready);
     setTimeout(ready, 3500); // safety net if fonts stall
   } else {
@@ -47,12 +50,14 @@
   const nav = $('#nav');
   const burger = $('#burger');
   const mobileMenu = $('#mobileMenu');
+  const isSubPage = document.body.classList.contains('page');
   let lastY = window.scrollY;
 
   function onScroll() {
+    if (!nav) return;
     const y = window.scrollY;
-    nav.classList.toggle('is-scrolled', y > 40);
-    if (y > 500 && y > lastY + 6 && !mobileMenu.classList.contains('is-open')) {
+    if (!isSubPage) nav.classList.toggle('is-scrolled', y > 40);
+    if (y > 500 && y > lastY + 6 && mobileMenu && !mobileMenu.classList.contains('is-open')) {
       nav.classList.add('is-hidden');
     } else if (y < lastY - 6 || y < 200) {
       nav.classList.remove('is-hidden');
@@ -70,11 +75,14 @@
     mobileMenu.setAttribute('aria-hidden', String(!open));
     document.body.style.overflow = open ? 'hidden' : '';
   }
-  burger.addEventListener('click', () => toggleMenu());
-  $$('a', mobileMenu).forEach((a) => a.addEventListener('click', () => toggleMenu(false)));
+  if (burger && mobileMenu) {
+    burger.addEventListener('click', () => toggleMenu());
+    $$('a', mobileMenu).forEach((a) => a.addEventListener('click', () => toggleMenu(false)));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && mobileMenu.classList.contains('is-open')) { toggleMenu(false); burger.focus(); } });
+  }
 
   // active link tracking
-  const sections = ['hero', 'services', 'insights', 'about'].map((id) => document.getElementById(id)).filter(Boolean);
+  const sections = ['hero', 'services', 'calculators', 'case-studies', 'about'].map((id) => document.getElementById(id)).filter(Boolean);
   const navLinks = $$('.nav__links a');
   const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
@@ -377,6 +385,45 @@
     };
     window.addEventListener('scroll', parallax, { passive: true });
     parallax();
+  }
+
+  /* ----------------------------------- case-study feed */
+  const homePosts = $('#homePosts');
+  if (homePosts && homePosts.dataset.feed && window.fetch) {
+    const escapeHtml = (v) => String(v).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    fetch(homePosts.dataset.feed, { cache: 'no-cache' })
+      .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+      .then((feed) => {
+        const posts = (feed.posts || []).slice(0, 3);
+        if (!posts.length) return;
+        homePosts.innerHTML = posts.map((p, i) => `
+          <article class="post glass reveal is-in" data-delay="${i * 120}" data-category="${escapeHtml(p.category.toLowerCase())}">
+            <a href="${escapeHtml(p.url.replace(/^\//, ''))}" class="post__wrap">
+              <div class="post__media"><img src="${escapeHtml(p.image.replace(/^\//, ''))}" alt="${escapeHtml(p.image_alt || '')}" width="1200" height="800" loading="lazy"><span class="tag">${escapeHtml(p.category)}</span></div>
+              <div class="post__body">
+                <h3>${escapeHtml(p.title)}</h3>
+                <p class="post__excerpt">${escapeHtml(p.excerpt)}</p>
+                <div class="post__meta"><span>${escapeHtml(p.author)}</span><span><time datetime="${escapeHtml(p.date)}">${new Date(p.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' })}</time></span><span>${p.reading_time} min read</span><i aria-hidden="true">→</i></div>
+              </div>
+            </a>
+          </article>`).join('');
+      })
+      .catch(() => { /* static markup stays in place */ });
+  }
+
+  const filterGroup = $('.filters');
+  if (filterGroup) {
+    const cards = $$('#postList .post');
+    const empty = $('#postsEmpty');
+    filterGroup.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-filter]');
+      if (!btn) return;
+      $$('[data-filter]', filterGroup).forEach((b) => b.classList.toggle('is-active', b === btn));
+      const f = btn.dataset.filter;
+      let shown = 0;
+      cards.forEach((c) => { const on = f === 'all' || c.dataset.category === f; c.hidden = !on; if (on) shown++; });
+      if (empty) empty.hidden = shown > 0;
+    });
   }
 
   /* --------------------------------- service detail links */
