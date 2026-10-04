@@ -1022,3 +1022,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .about__mono { flex-wrap: wrap; }
   .certs { grid-template-columns: auto auto; justify-content: start; gap: 14px 28px; }
 }
+
+/* ---------- Stats: note + longer labels ---------- */
+.stats__note { margin-top: 20px; max-width: 40ch; font-size: 14px; line-height: 1.7; color: var(--text-dim); }
+.stats__list > li > span { display: block; max-width: 18ch; margin-inline: auto; line-height: 1.5; }
