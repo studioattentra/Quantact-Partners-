@@ -467,20 +467,28 @@
       // trim and cap every value client-side as well (the host-side handler is the real limit)
       for (const [k, v] of Array.from(data.entries())) if (typeof v === 'string') data.set(k, v.trim().slice(0, k === 'message' ? 2000 : 160));
       status.textContent = 'Sending…';
-      // 1) hosting form handler (Netlify Forms picks up data-netlify forms automatically)
+      // 1) the site's own handler (api/contact.php on the live server) answers with JSON
       try {
-        const res = await fetch(enquiry.getAttribute('action') || '/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(data).toString() });
-        if (res.ok && !location.protocol.startsWith('file')) {
-          const text = await res.text();
-          // A static host without a form handler returns the homepage HTML; treat only a real handler response as success
-          if (!/<html/i.test(text) || /netlify/i.test(res.headers.get('server') || '') || /success/i.test(text.slice(0, 600))) {
+        const res = await fetch(enquiry.getAttribute('action'), { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' }, body: new URLSearchParams(data).toString(), credentials: 'same-origin' });
+        const isJson = (res.headers.get('content-type') || '').includes('application/json');
+        if (isJson) {
+          const out = await res.json();
+          if (out.ok) {
             status.textContent = 'Thank you. Your enquiry has been sent; we reply within 24 hours.';
             enquiry.reset();
             lastSent = Date.now(); sending = false; submitBtn.disabled = false;
             return;
           }
+          if (out.fields) Object.entries(out.fields).forEach(([k, msg]) => { const el = enquiry.elements[k]; if (el) fieldError(el, msg); });
+          if (res.status !== 503) {
+            status.textContent = out.error || 'Something went wrong. Please try again.';
+            status.classList.add('is-error');
+            sending = false; submitBtn.disabled = false;
+            return;
+          }
+          // 503 = handler not configured yet → fall through to the email fallback
         }
-      } catch (err) { /* fall through to mailto */ }
+      } catch (err) { /* handler unreachable (preview, local file, outage) → fall through */ }
       // 2) mailto fallback
       const subject = encodeURIComponent(`Enquiry: ${data.get('service')} — ${data.get('name')}`);
       const body = encodeURIComponent(
