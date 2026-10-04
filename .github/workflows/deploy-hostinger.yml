@@ -13,7 +13,12 @@ name: Build and deploy to Hostinger
 
 on:
   push:
-    branches: [main]
+    # `main` is the intended production branch. The second entry keeps the
+    # pipeline working until the repository's default branch is renamed to
+    # main (HOSTINGER.md, Part A) — remove it after that.
+    branches:
+      - main
+      - claude/accountant-portfolio-glassmorphism-rofnks
     paths-ignore:
       - "case-studies/**"
       - "privacy.html"
@@ -55,7 +60,7 @@ jobs:
             echo "Generated pages unchanged."
           else
             git commit -m "Build case studies"
-            git push
+            git push origin HEAD:${GITHUB_REF_NAME}
           fi
 
       - name: Publish dist/ to the hostinger branch
@@ -72,7 +77,11 @@ jobs:
           commit_message: "Deploy ${{ github.sha }}"
 
       - name: Tell Hostinger to pull
-        if: ${{ secrets.HOSTINGER_DEPLOY_HOOK != '' }}
         env:
           HOOK: ${{ secrets.HOSTINGER_DEPLOY_HOOK }}
-        run: curl -fsS --max-time 30 -X POST "$HOOK" || echo "Webhook call failed; Hostinger will pull on its next cycle."
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "HOSTINGER_DEPLOY_HOOK secret not set; Hostinger will pull on its next cycle."
+            exit 0
+          fi
+          curl -fsS --max-time 30 -X POST "$HOOK" || echo "Webhook call failed; Hostinger will pull on its next cycle."
