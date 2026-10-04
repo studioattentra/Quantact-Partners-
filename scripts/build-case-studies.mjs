@@ -26,7 +26,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = path.join(ROOT, 'content', 'case-studies');
 const OUT = path.join(ROOT, 'case-studies');
 const TEMPLATES = path.join(ROOT, 'templates');
-const SITE_URL = (process.env.SITE_URL || 'https://www.quantactpartners.co.uk').replace(/\/$/, ''); // [TO BE CONFIRMED] final domain
+const SITE_URL = (process.env.SITE_URL || 'https://www.quantactpartners.co.uk').replace(/\/$/, ''); // set SITE_URL to the live domain when it differs
 
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const humanDate = (d) => new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
@@ -124,7 +124,7 @@ async function main() {
       tax_year: esc(p.tax_year || ''),
       reading_time: p.reading_time || 5,
       effective_date_human: p.effective_date ? humanDate(p.effective_date) : humanDate(p.date),
-      review_date_human: p.review_date ? humanDate(p.review_date) : '[TO BE CONFIRMED]',
+      review_date_human: p.review_date ? humanDate(p.review_date) : 'On request',
       related_service: esc(p.related_service || 'vat-bookkeeping'),
       related_service_title: esc(p.related_service_title || 'Our services'),
       cta_text: esc(p.cta_text || 'Discuss your accounting needs'),

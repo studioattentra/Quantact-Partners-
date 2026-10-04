@@ -37,4 +37,4 @@ assets/vendor/        Three.js (MIT)
 
 ## Contact details
 
-Search for `[FIRM_EMAIL]` and `[CALENDLY_LINK]` across the repository and replace them once the firm mailbox and booking link are confirmed. Case studies are managed at `/admin/`; see `CHANGES.md`.
+The enquiry form's email fallback address is the `FIRM_EMAIL` constant in `assets/js/main.js`. Case studies are managed at `/admin/`; see `CHANGES.md`.

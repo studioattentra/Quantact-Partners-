@@ -26,7 +26,7 @@ backend:
 # Drafts → In review → Ready → Publish. Drafts never appear on the site.
 publish_mode: editorial_workflow
 
-site_url: https://www.quantactpartners.co.uk   # [TO BE CONFIRMED] final domain
+site_url: https://www.quantactpartners.co.uk   # change to the live domain if it differs
 display_url: https://www.quantactpartners.co.uk
 logo_url: /assets/img/logo.png
 locale: en

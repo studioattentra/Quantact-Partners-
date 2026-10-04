@@ -1,5 +1,11 @@
 # Changes applied from the principal's brief
 
+## Update, 4 October 2026 (later the same day)
+- The principal's portrait is now in the About section frame (`assets/img/umer-aijaz.jpg`, lightly desaturated to sit with the palette).
+- All bracketed placeholders were removed from the site. Contact now points to the enquiry form; legal pages say registered details are available on request; the Calendly button was replaced by a "Book your free call" button that jumps to the form. The form's email fallback delivers to the Gmail address originally supplied, set as the `FIRM_EMAIL` constant in `assets/js/main.js`, until a firm mailbox exists.
+- Image slots now hold original illustrations in the palette: a books-and-online-store illustration for the case study and two certification badge graphics (plain text, no third-party logos). Replace with official badge images when they arrive.
+- The list of items still needed (section b below) therefore no longer appears on the site itself; it remains here as a to-do list.
+
 Date: 4 October 2026 · Branch: `claude/accountant-portfolio-glassmorphism-rofnks`
 
 The visual design (palette, typography, glass panels, WebGL backdrops and animations) was left as it was, per the instruction that accompanied the brief. Everything below is content, structure and functionality.
