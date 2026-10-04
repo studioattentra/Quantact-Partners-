@@ -15,17 +15,20 @@
  * build in .github/workflows/case-studies.yml publishes it when the day comes.
  */
 
-import { readFile, writeFile, readdir, mkdir, rm } from 'node:fs/promises';
+import { readFile, writeFile, readdir, mkdir, rm, cp } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
-import yaml from 'js-yaml';
+import { load as loadYaml } from 'js-yaml';
+import sanitizeHtml from 'sanitize-html';
+import { netlifyHeaders, htaccess } from './security-headers.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = path.join(ROOT, 'content', 'case-studies');
 const OUT = path.join(ROOT, 'case-studies');
 const TEMPLATES = path.join(ROOT, 'templates');
+const DIST = path.join(ROOT, 'dist');
 const SITE_URL = (process.env.SITE_URL || 'https://www.quantactpartners.co.uk').replace(/\/$/, ''); // set SITE_URL to the live domain when it differs
 
 const esc = (s = '') => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -33,10 +36,28 @@ const humanDate = (d) => new Date(d).toLocaleDateString('en-GB', { day: 'numeric
 const isoDate = (d) => new Date(d).toISOString().slice(0, 10);
 const slugify = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+// Markdown → HTML, then sanitised: only ordinary article markup survives, no
+// scripts, event handlers, iframes or javascript: URLs, even if a compromised
+// editor account tried to add them.
+function renderMarkdown(md) {
+  const html = marked.parse(md, { mangle: false, headerIds: false });
+  return sanitizeHtml(html, {
+    allowedTags: ['h2', 'h3', 'h4', 'p', 'a', 'ul', 'ol', 'li', 'strong', 'em', 'blockquote', 'code', 'pre', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'img', 'br', 'hr', 'figure', 'figcaption', 'sup', 'sub'],
+    allowedAttributes: { a: ['href', 'title', 'rel', 'target'], img: ['src', 'alt', 'title', 'width', 'height', 'loading'], th: ['scope'], td: ['colspan', 'rowspan'] },
+    allowedSchemes: ['https', 'http', 'mailto'],
+    allowedSchemesAppliedToAttributes: ['href', 'src'],
+    allowProtocolRelative: false,
+    transformTags: {
+      a: (tagName, attribs) => ({ tagName, attribs: { ...attribs, rel: 'noopener noreferrer', ...(attribs.href && /^https?:/.test(attribs.href) ? { target: '_blank' } : {}) } }),
+      img: (tagName, attribs) => ({ tagName, attribs: { ...attribs, loading: 'lazy' } }),
+    },
+  });
+}
+
 function parseFrontMatter(raw) {
   const m = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
   if (!m) throw new Error('Missing front matter');
-  return { data: yaml.load(m[1]) || {}, body: m[2] };
+  return { data: loadYaml(m[1]) || {}, body: m[2] };
 }
 
 function render(template, vars) {
@@ -131,7 +152,7 @@ async function main() {
       sources_html: sources || '<li>None listed.</li>',
       assumptions_html: assumptions || '<li>None listed.</li>',
       caveats_html: caveats || '<li>None listed.</li>',
-      body: marked.parse(p.body, { mangle: false, headerIds: false }),
+      body: renderMarkdown(p.body),
       json_ld: jsonLd,
       footer,
     });
@@ -176,7 +197,18 @@ async function main() {
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls.map((u) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`).join('\n') + '\n</urlset>\n');
 
-  console.log(`Built ${live.length} case stud${live.length === 1 ? 'y' : 'ies'} and ${legal.length} legal pages.`);
+  // ---- Deployable folder: only public files, plus the security headers
+  if (existsSync(DIST)) await rm(DIST, { recursive: true });
+  await mkdir(DIST, { recursive: true });
+  const publicEntries = ['index.html', 'privacy.html', 'disclaimer.html', 'robots.txt', 'sitemap.xml', 'assets', 'case-studies', 'admin'];
+  for (const entry of publicEntries) {
+    const from = path.join(ROOT, entry);
+    if (existsSync(from)) await cp(from, path.join(DIST, entry), { recursive: true });
+  }
+  await writeFile(path.join(DIST, '_headers'), netlifyHeaders());
+  await writeFile(path.join(DIST, '.htaccess'), htaccess());
+
+  console.log(`Built ${live.length} case stud${live.length === 1 ? 'y' : 'ies'} and ${legal.length} legal pages; deployable copy in dist/.`);
   skipped.forEach((p) => console.log(`  skipped ${p.file} (${p.published === false ? 'draft' : 'scheduled for ' + p.date})`));
 }
 
