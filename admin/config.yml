@@ -1,21 +1,17 @@
 # Decap CMS configuration — Quantact Partners case studies
 #
-# Login: /admin/ on the live site. With the git-gateway backend below, the
-# principal signs in with an email address and password through Netlify
-# Identity (invite-only). Each save commits a Markdown file to the repository;
-# the site rebuilds automatically.
-#
-# If the site is hosted somewhere other than Netlify, swap the backend for:
-#   backend:
-#     name: github
-#     repo: studioattentra/Web
-#     branch: main
-#     base_url: https://<your-oauth-proxy>   # a small OAuth relay is required for GitHub login
-# See CHANGES.md for the hosting notes.
+# Login: https://<your-domain>/admin/ → "Login with GitHub". The owner's GitHub
+# account must have write access to the repository. The sign-in goes through
+# the site's own relay (admin/oauth/*.php on Hostinger), which holds the
+# GitHub OAuth App secret in private/site-config.php. Each save commits a
+# Markdown file to the repository; GitHub Actions rebuilds and Hostinger pulls.
 
 backend:
-  name: git-gateway
+  name: github
+  repo: studioattentra/Web
   branch: main
+  base_url: https://www.quantactpartners.co.uk   # change to the live domain (no trailing slash)
+  auth_endpoint: admin/oauth/auth.php
   commit_messages:
     create: "Case study: add {{slug}}"
     update: "Case study: update {{slug}}"
