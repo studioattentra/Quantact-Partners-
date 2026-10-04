@@ -12,7 +12,7 @@ npm run serve     # serves dist/ with the production security headers at http://
 npm run audit     # dependency audit + exposed-file and secret scan of dist/
 ```
 
-Deploy the contents of `dist/` only. The scenes are loaded as an ES module, so the page must be served over HTTP rather than opened from the file system. Security notes and host settings: `SECURITY.md`.
+Hosting: see `HOSTINGER.md` (GitHub Actions builds `dist/` into the `hostinger` branch; hPanel → Git pulls it). The scenes are loaded as an ES module, so the page must be served over HTTP rather than opened from the file system. Security notes and host settings: `SECURITY.md`.
 
 ## Structure
 
@@ -26,6 +26,8 @@ assets/img/           brand mark, portrait, badges, case-study images
 assets/vendor/        Three.js (MIT), bundled from npm by `npm run vendor:three`
 content/case-studies/ Markdown case studies (edited through /admin/)
 templates/, scripts/  page shells and the build
+api/, admin/oauth/    PHP contact handler and GitHub login relay (run on Hostinger)
+deploy/               example private configuration for the server
 dist/                 generated deployable site (not committed)
 ```
 

@@ -1,5 +1,12 @@
 # Changes applied from the principal's brief
 
+## Hostinger / GitHub readiness, 4 October 2026
+- Deployment: GitHub Action builds the site and publishes only `dist/` to a `hostinger` branch; hPanel → Git pulls it into `public_html` (guide: `HOSTINGER.md`). Netlify files removed.
+- Contact form: `api/contact.php` (validation, same-origin, honeypot, rate limits, header-safe mail, private log). Front end posts there and falls back to the visitor's email app if the handler is unavailable.
+- Admin login: GitHub OAuth through the site's own PHP relay (`admin/oauth/`); Decap config switched to the `github` backend.
+- `.htaccess` rewritten for LiteSpeed/Apache with SetEnvIf-based headers, HTTPS redirect, denied private files, caching and compression.
+- Private settings template: `deploy/site-config.example.php`. PHP syntax is linted in the deploy workflow.
+
 ## Security hardening, 4 October 2026
 Full report in `SECURITY.md`. In short: strict Content-Security-Policy and the other standard security headers generated from one source file into `dist/_headers` and `dist/.htaccess`; only a clean `dist/` folder is deployed (no drafts, templates, scripts or config exposed); admin editor pinned with Subresource Integrity and no inline scripts; Markdown sanitised at build time; form length limits, honeypot and resend cooldown; fonts self-hosted so no third-party request remains; dependencies updated (marked 18, js-yaml 5, Three.js 0.186, sanitize-html, bcryptjs); `npm run audit` scans for exposed files and secrets; `npm run hash-password` produces bcrypt hashes for an optional Basic-Auth lock on `/admin/`. Git history scan found no secrets, but the principal's old Gmail address and phone number remain in early commits (see SECURITY.md §2).
 

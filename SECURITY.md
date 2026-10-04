@@ -21,12 +21,12 @@ So several classic checklist items have no surface here. The table below records
 | Hide API keys | **None exist.** The code calls no third-party API with a key. The only external services are the host's own identity and form endpoints, which use the visitor's session, not a key. | Pattern scan of the full git history and of `dist/` for keys, tokens, JWTs and private keys: none found. The scan is now automated in `npm run audit`. |
 | Check environment variables | The only variable read is `SITE_URL` (public domain) during build. No `.env` files are tracked. | `.gitignore` now blocks `.env*`, `*.pem`, `*.key`, `.htpasswd`, `.netlify/`, `dist/`. `NODE_ENV=production` set for the host build. |
 | Protect admin routes | `/admin/` loaded its editor from a CDN at a floating version with no integrity check, and its preview code was an inline script. | Editor and identity widget pinned to exact versions with Subresource Integrity hashes; inline script moved to `admin/cms.js`; `/admin/*` gets `Cache-Control: no-store`, `X-Robots-Tag: noindex`, its own Content-Security-Policy and `frame-ancestors 'none'`; `robots.txt` disallows it. Optional second layer: web-server Basic Auth (section 4). |
-| Add proper authentication | Decap uses the host's identity service (bcrypt-hashed passwords, rate-limited login, invite-only registration) and a short-lived JWT to reach Git Gateway. The site never sees or stores a password. | Documented the required host settings (section 4). Admin account has full create/edit/delete rights over case studies and media, nothing else. |
+| Add proper authentication | The admin signs in with GitHub (OAuth 2.0, 2FA available) through a small PHP relay on the site; the client secret stays in the private config, the state parameter is checked, and the token is handed to the editor window only on our own origin. The site never sees or stores a password. | Relay in `admin/oauth/`, setup in `HOSTINGER.md` Part B. The owner's GitHub account has full create/edit/delete rights over case studies and media, nothing else. |
 | Users only access what they should (frontend) | Everything public is meant to be public. Drafts never reach the site because the build skips `published: false` and future-dated posts. | Build now emits a clean `dist/` containing only public files; the raw Markdown (including drafts), templates, scripts, lockfiles and config are no longer deployed. |
-| Sanitise forms | Form fields had no length limits; client-side code already escaped all injected HTML. | `maxlength` on every field, trimming and capping before send, honeypot field, 30-second resend cooldown and disabled button while sending. The host handler (Netlify Forms) applies its own spam filtering. Nothing from the form is ever written into a page. |
+| Sanitise forms | Form fields had no length limits and no server-side validation of our own. | Client: `maxlength`, trimming, honeypot, 30-second cooldown. Server (`api/contact.php`): method and same-origin checks, allow-listed service value, length and format validation, control characters and CR/LF stripped so mail headers cannot be injected, UTF-8 subject encoding. Nothing from the form is ever written into a page. |
 | Protect against XSS | Front end: one `innerHTML` use, fed only through an escaper. Build: Markdown from the admin was rendered unsanitised (acceptable for a trusted owner, but no defence if the owner account were compromised). | Markdown output is now passed through `sanitize-html` with an allow-list (no scripts, handlers, iframes or `javascript:` URLs; external links get `rel="noopener noreferrer"`). A strict Content-Security-Policy (`script-src 'self'`, `style-src 'self'`, `object-src 'none'`, `base-uri 'self'`) is sent on every page, so even an injected script could not run. Verified with zero CSP violations across all pages. |
-| Rate limiting | No server to rate-limit on. | Form: cooldown + honeypot + host spam filter. Login: handled by the identity service. Site-wide: enable the host's or Cloudflare's rate-limiting rule for `/admin/*` and the form endpoint (section 4). |
-| Secure API endpoints | None of our own. `case-studies/index.json` is public read-only data. | Nothing to lock down; confirmed no write endpoints exist. |
+| Rate limiting | No application server existed. | Form: `api/contact.php` enforces 5 submissions per IP per hour and 60 site-wide per hour (file-based counters outside the web root), plus honeypot and a client-side cooldown. Admin login is GitHub's (their throttling). Optional Basic Auth on `/admin/` adds a second gate. |
+| Secure API endpoints | Two small PHP endpoints now exist: `api/contact.php` (POST only) and `admin/oauth/*` (login relay). | POST-only, same-origin, rate-limited, JSON responses with `no-store`; OAuth relay validates provider and scope, uses a random state in an HttpOnly/Secure/SameSite cookie, verifies TLS, and never exposes the client secret. `_lib.php` and `config.php` are blocked by `.htaccess`. |
 | Check CORS | The site makes no cross-origin requests at all after self-hosting the fonts. No `Access-Control-Allow-Origin` header is set anywhere. | `connect-src 'self'` in the CSP enforces this going forward; `Cross-Origin-Resource-Policy: same-origin` and `Cross-Origin-Opener-Policy: same-origin` added. |
 | Add security headers | None were set. | Added, from one source file (`scripts/security-headers.mjs`) written into `dist/_headers` (Netlify, Cloudflare Pages) and `dist/.htaccess` (Apache/cPanel): Content-Security-Policy, Strict-Transport-Security (2 years, preload), X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, COOP, CORP, X-Permitted-Cross-Domain-Policies, plus directory listing off and HTTPS redirect for Apache. |
 | Turn off debug mode | No debug mode or source maps exist; no `console` output in the front-end code. | `NODE_ENV=production` for builds; exposure check fails the build if a `.map` or log file ever lands in `dist/`. |
@@ -49,36 +49,22 @@ npm run hash-password            # new random password + bcrypt hash
 npm run hash-password -- "your own passphrase"
 ```
 
-## 4. Host-side settings (cannot be done from the repository)
+## 4. Host-side settings (Hostinger)
 
-These are one-off settings in the hosting dashboard. The repository is ready for them.
+The full click-by-click guide is in `HOSTINGER.md`. The security-relevant points:
 
-**Netlify (recommended)**
-1. Connect the repository; build command and publish folder are read from `netlify.toml` (`dist`).
-2. Identity → Enable. Registration: **Invite only**. Enable **Git Gateway**. Invite the owner's email.
-3. Identity → Settings: enable external providers only if you want them (not required). Leave password policy at default or stronger.
-4. Forms: enabled automatically by the `data-netlify` attribute; turn on **spam filtering** and set a notification email for new submissions.
-5. Domain: enable **HTTPS** (Let's Encrypt) and **Force HTTPS**. Submit the domain to the HSTS preload list once the site is stable.
-6. Optional second lock on the editor (Pro plan): add `Basic-Auth: user:password` under `/admin/*` in `_headers` using the pair from `npm run hash-password`.
-7. Optional: put Cloudflare in front and add a rate-limiting rule for `/admin/*` and `POST /`.
-
-**Apache / cPanel hosting**
-1. Upload the contents of `dist/` (including the hidden `.htaccess`) to `public_html`.
-2. Save the `.htpasswd` line from `npm run hash-password` to a file **outside** `public_html` and uncomment the Basic-Auth block at the bottom of `.htaccess`, pointing `AuthUserFile` at it.
-3. The content admin's login still needs an identity backend; on non-Netlify hosts switch `admin/config.yml` to the `github` backend with an OAuth relay, or keep the admin on Netlify and the public site elsewhere.
-4. Enable AutoSSL / Let's Encrypt and keep PHP and other unused server modules disabled for this account.
-
-**GitHub**
-1. Turn on two-factor authentication for every account with write access.
-2. Protect `main`: require pull requests or at least block force-pushes and deletions.
-3. Settings → Code security: enable secret scanning and Dependabot alerts.
-4. Give the host a deploy key or the GitHub App scoped to this repository only.
+1. **Deploy only the `hostinger` branch** (built by GitHub Actions from `dist/`) through hPanel → Git. Source, drafts and configuration never reach the server.
+2. **Private configuration** lives in `domains/<domain>/private/site-config.php`, one level above `public_html`, so it is not web-accessible. It holds the enquiry mailbox and the GitHub OAuth App secret. `.htaccess` additionally blocks `config.php` and `_lib.php` if anyone ever places them inside `public_html`.
+3. **Force HTTPS** in hPanel → SSL; `.htaccess` also redirects and sends HSTS.
+4. **Admin login** = GitHub account with write access to the repository, via the site's own OAuth relay (`admin/oauth/`). Turn on 2FA for that GitHub account. Optional second lock: Basic Auth block at the end of `.htaccess` with `npm run hash-password`.
+5. **Contact form** = `api/contact.php`: same-origin check, honeypot, per-IP (5/hour) and global (60/hour) rate limits, header-injection-safe mail, private log in `private/storage/`. Create the sender mailbox in hPanel → Emails.
+6. **GitHub**: `main` protected against force-push, secret scanning and Dependabot alerts on, the Action's `npm run audit` and `npm run lint:php` gate every deploy.
 
 ## 5. Residual risks to be aware of
 
 - The editor runs third-party JavaScript (Decap CMS, identity widget) from a CDN. Versions are pinned with integrity hashes, so a changed file will refuse to load; keep the pins current when upgrading.
 - The owner's identity account is the single key to the content. Use a long unique password and 2FA where the host offers it.
-- The form's email fallback opens the visitor's mail client addressed to the delivery mailbox set in `assets/js/main.js`; that address is therefore visible to a visitor who uses the fallback.
+- The form's email fallback (used only if `api/contact.php` is unreachable or unconfigured) opens the visitor's mail client addressed to the mailbox set in `assets/js/main.js`.
 - Personal data in old git history (see section 2) remains until the history is rewritten.
 
 ## 6. Reporting a vulnerability
