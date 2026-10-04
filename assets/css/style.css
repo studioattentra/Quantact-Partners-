@@ -1260,3 +1260,23 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .enquiry .btn--outline { border-color: rgba(246, 245, 239, 0.5); }
 @media (max-width: 1024px) { .cta__content--form { grid-template-columns: 1fr; } }
 @media (max-width: 600px) { .enquiry__grid { grid-template-columns: 1fr; } .enquiry { padding: 24px 20px; } }
+
+/* =========================================================
+   LEGAL — footer wording and legal pages
+   ========================================================= */
+.footer__legal { margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(246, 245, 239, 0.06); }
+.footer__legal p { font-size: 11.5px; line-height: 1.7; color: var(--text-faint); max-width: 110ch; }
+.footer__bottom { margin-top: 20px; }
+.footer .to-top { display: grid; }
+.legal__wrap { max-width: 860px; }
+.legal .title { margin-bottom: 16px; }
+.legal__meta { font-size: 12.5px; color: var(--text-faint); margin-bottom: 36px; }
+.legal__body { padding: clamp(28px, 4vw, 52px); font-size: 15px; line-height: 1.8; color: var(--text-dim); }
+.legal__body h2 { font-family: var(--serif); font-weight: 400; font-size: 26px; color: var(--ivory); margin: 36px 0 12px; }
+.legal__body h2:first-child { margin-top: 0; }
+.legal__body p { margin-bottom: 14px; }
+.legal__body ul { padding-left: 20px; margin-bottom: 16px; }
+.legal__body li { margin-bottom: 8px; }
+.legal__body li::marker { color: var(--sage); }
+.legal__body strong { color: var(--ivory); font-weight: 500; }
+.legal__body a { color: var(--ivory); text-decoration: underline; text-decoration-color: rgba(183, 199, 163, 0.6); text-underline-offset: 3px; }

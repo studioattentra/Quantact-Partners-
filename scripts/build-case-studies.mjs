@@ -152,6 +152,17 @@ async function main() {
     })),
   }, null, 2));
 
+  // Legal pages share the page shell and footer
+  const pageTpl = await readFile(path.join(TEMPLATES, 'page.html'), 'utf8');
+  const legal = [
+    { file: 'privacy.html', body: 'privacy-body.html', title: 'Privacy Policy | Quantact Partners', description: 'How Quantact Partners collects, uses and protects personal data from visitors and enquiries, under UK GDPR.' },
+    { file: 'disclaimer.html', body: 'disclaimer-body.html', title: 'Website Disclaimer | Quantact Partners', description: 'Information on this website is general guidance for UK readers, not advice. Read the full disclaimer and terms of use.' },
+  ];
+  for (const pg of legal) {
+    const body = await readFile(path.join(TEMPLATES, pg.body), 'utf8');
+    await writeFile(path.join(ROOT, pg.file), render(pageTpl, { site_url: SITE_URL, path: pg.file, title: pg.title, description: pg.description, body, footer }));
+  }
+
   const urls = [
     `${SITE_URL}/`, `${SITE_URL}/case-studies/`, `${SITE_URL}/privacy.html`, `${SITE_URL}/disclaimer.html`,
     ...live.map((p) => `${SITE_URL}/case-studies/${p.slug}/`),
@@ -160,7 +171,7 @@ async function main() {
     `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     urls.map((u) => `  <url><loc>${u}</loc><lastmod>${today}</lastmod></url>`).join('\n') + '\n</urlset>\n');
 
-  console.log(`Built ${live.length} case stud${live.length === 1 ? 'y' : 'ies'}.`);
+  console.log(`Built ${live.length} case stud${live.length === 1 ? 'y' : 'ies'} and ${legal.length} legal pages.`);
   skipped.forEach((p) => console.log(`  skipped ${p.file} (${p.published === false ? 'draft' : 'scheduled for ' + p.date})`));
 }
 
