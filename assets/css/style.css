@@ -1234,3 +1234,29 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .article__aside { position: static; }
 }
 @media (max-width: 600px) { .article__hero { padding-top: 48px; } .article__figure { margin-top: 32px; } .filters { margin-top: -8px; } }
+
+/* =========================================================
+   CONTACT — facts, actions, enquiry form
+   ========================================================= */
+.cta__content--form { grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 48px; align-items: start; }
+.cta__facts { margin: 24px 0 30px; display: flex; flex-direction: column; gap: 10px; }
+.cta__facts li { position: relative; padding-left: 20px; font-size: 13.5px; color: var(--ivory); }
+.cta__facts li::before { content: ""; position: absolute; left: 0; top: 9px; width: 8px; height: 1px; background: var(--sage); }
+.cta__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px 32px; }
+.enquiry { padding: 30px 28px 28px; background: rgba(14, 24, 23, 0.55); }
+.enquiry h3 { font-family: var(--serif); font-weight: 400; font-size: 24px; color: var(--ivory); margin-bottom: 20px; }
+.enquiry__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; }
+.field--full { grid-column: 1 / -1; }
+.field textarea { resize: vertical; min-height: 100px; }
+.field select { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23B7C7A3' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+.field select option { background: #141917; color: var(--ivory); }
+.field--check label { display: grid; grid-template-columns: 16px 1fr; gap: 12px; align-items: start; font-size: 12px; line-height: 1.6; color: var(--text-dim); letter-spacing: 0; cursor: pointer; }
+.field--check input { width: 16px; height: 16px; margin: 3px 0 0; accent-color: var(--sage); }
+.field--check a { color: var(--ivory); text-decoration: underline; text-underline-offset: 3px; }
+.field__error { font-size: 11px; color: var(--ivory); }
+.enquiry__hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.enquiry__status { min-height: 1.4em; font-size: 12.5px; color: var(--ivory); margin: 4px 0 16px; }
+.enquiry__status.is-error { color: #e9e2d6; }
+.enquiry .btn--outline { border-color: rgba(246, 245, 239, 0.5); }
+@media (max-width: 1024px) { .cta__content--form { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .enquiry__grid { grid-template-columns: 1fr; } .enquiry { padding: 24px 20px; } }

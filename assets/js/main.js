@@ -426,6 +426,62 @@
     });
   }
 
+  /* ------------------------------------------ enquiry form */
+  const enquiry = $('#enquiryForm');
+  if (enquiry) {
+    const status = $('#enquiryStatus');
+    const FIRM_EMAIL = '[FIRM_EMAIL]'; // replaced when the firm mailbox is confirmed
+    const fieldError = (el, msg) => {
+      let err = el.parentElement.querySelector('.field__error');
+      if (!msg) { if (err) err.remove(); el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); return; }
+      if (!err) { err = document.createElement('small'); err.className = 'field__error'; err.id = el.id + '-error'; el.parentElement.appendChild(err); }
+      err.textContent = msg;
+      el.setAttribute('aria-invalid', 'true');
+      el.setAttribute('aria-describedby', err.id);
+    };
+    const validate = () => {
+      let first = null;
+      const check = (el, ok, msg) => { fieldError(el, ok ? '' : msg); if (!ok && !first) first = el; };
+      const name = enquiry.elements.name, email = enquiry.elements.email, service = enquiry.elements.service, message = enquiry.elements.message, consent = enquiry.elements.consent;
+      check(name, name.value.trim().length > 1, 'Please enter your name.');
+      check(email, /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim()), 'Please enter a valid email address.');
+      check(service, service.value !== '', 'Please choose a service.');
+      check(message, message.value.trim().length > 9, 'Please tell us a little about what you need (at least 10 characters).');
+      check(consent, consent.checked, 'Please confirm you agree to us using your details to respond.');
+      if (first) first.focus();
+      return !first;
+    };
+    enquiry.querySelectorAll('input, select, textarea').forEach((el) => el.addEventListener('input', () => fieldError(el, '')));
+
+    enquiry.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.classList.remove('is-error');
+      if (!validate()) { status.textContent = 'Please check the highlighted fields.'; status.classList.add('is-error'); return; }
+      if (enquiry.elements.website.value) return; // honeypot
+      const data = new FormData(enquiry);
+      status.textContent = 'Sending…';
+      // 1) hosting form handler (Netlify Forms picks up data-netlify forms automatically)
+      try {
+        const res = await fetch(enquiry.getAttribute('action') || '/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(data).toString() });
+        if (res.ok && !location.protocol.startsWith('file')) {
+          const text = await res.text();
+          // A static host without a form handler returns the homepage HTML; treat only a real handler response as success
+          if (!/<html/i.test(text) || /netlify/i.test(res.headers.get('server') || '') || /success/i.test(text.slice(0, 600))) {
+            status.textContent = 'Thank you. Your enquiry has been sent; we reply within 24 hours.';
+            enquiry.reset();
+            return;
+          }
+        }
+      } catch (err) { /* fall through to mailto */ }
+      // 2) mailto fallback
+      const subject = encodeURIComponent(`Enquiry: ${data.get('service')} — ${data.get('name')}`);
+      const body = encodeURIComponent(
+        `Name: ${data.get('name')}\nBusiness email: ${data.get('email')}\nCompany: ${data.get('company') || '-'}\nService interest: ${data.get('service')}\n\n${data.get('message')}\n\nConsent to contact: yes`);
+      window.location.href = `mailto:${FIRM_EMAIL}?subject=${subject}&body=${body}`;
+      status.textContent = 'Your email app should open with the enquiry filled in. If it does not, email us at ' + FIRM_EMAIL + '.';
+    });
+  }
+
   /* --------------------------------- service detail links */
   $$('[data-detail]').forEach((a) => {
     a.addEventListener('click', () => {
