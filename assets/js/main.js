@@ -247,6 +247,14 @@
     parallax();
   }
 
+  /* --------------------------------- service detail links */
+  $$('[data-detail]').forEach((a) => {
+    a.addEventListener('click', () => {
+      const d = document.getElementById(a.dataset.detail);
+      if (d && d.tagName === 'DETAILS') d.open = true;
+    });
+  });
+
   /* ---------------------------------- smooth anchor offset */
   $$('a[href^="#"]').forEach((a) => {
     a.addEventListener('click', (e) => {

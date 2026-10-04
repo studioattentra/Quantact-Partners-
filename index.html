@@ -56,9 +56,20 @@
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
     <a href="#top">Home</a>
     <a href="#services">Services</a>
-    <a href="#insights">Insights</a>
+    <a href="#calculators">Calculators</a>
+    <a href="#case-studies">Case Studies</a>
     <a href="#about">About</a>
-    <a href="#contact">Get in Touch</a>
+    <a href="#contact">Discuss your accounting needs</a>
+    <ul class="mobile-menu__services" aria-label="Services">
+      <li><a href="#detail-limited-company-accounts" data-detail="detail-limited-company-accounts">Limited Company Accounts &amp; CT600s</a></li>
+      <li><a href="#detail-management-accounts" data-detail="detail-management-accounts">Management Accounts &amp; Reporting</a></li>
+      <li><a href="#detail-tax-compliance" data-detail="detail-tax-compliance">Tax Compliance &amp; Advisory</a></li>
+      <li><a href="#detail-vat-bookkeeping" data-detail="detail-vat-bookkeeping">VAT Bookkeeping</a></li>
+      <li><a href="#detail-personal-tax" data-detail="detail-personal-tax">Personal Tax Returns</a></li>
+      <li><a href="#detail-sole-trader-partnership-llp" data-detail="detail-sole-trader-partnership-llp">Sole Trader, Partnership &amp; LLP Accounts</a></li>
+      <li><a href="#detail-data-migration" data-detail="detail-data-migration">Data Migration</a></li>
+      <li><a href="#detail-cis-returns" data-detail="detail-cis-returns">CIS Returns</a></li>
+    </ul>
   </div>
 
   <main id="top">
@@ -196,43 +207,253 @@
         <div class="section__head split">
           <div>
             <p class="eyebrow reveal">Our Services</p>
-            <h2 class="title reveal" data-delay="80">Comprehensive<br>financial solutions<br>for modern businesses.</h2>
+            <h2 class="title reveal" data-delay="80">Accounting, tax and VAT<br>for growing UK businesses.</h2>
           </div>
           <div class="section__aside reveal" data-delay="160">
-            <p>From bookkeeping to strategic advisory, we provide the expertise and insight you need to grow, protect, and optimise your business.</p>
-            <a href="#contact" class="link-arrow">View all services <span>→</span></a>
+            <p>From VAT bookkeeping to year-end accounts and corporation tax, we handle the compliance properly and explain what the numbers mean.</p>
+            <a href="#service-details" class="link-arrow">Service details <span>→</span></a>
           </div>
         </div>
 
-        <div class="cards">
+        <div class="cards cards--eight">
           <article class="glass card reveal" data-delay="0">
             <span class="card__num">01</span>
-            <div class="card__icon"><svg viewBox="0 0 32 32"><path d="M6 25V15M13 25V9M20 25v-6M27 25V5"/><path d="M4 27h24"/></svg></div>
-            <h3>Accounting &amp; Assurance</h3>
-            <p>Accurate reporting.<br>Greater confidence.</p>
-            <a href="#contact" class="card__link">Learn more <span>→</span></a>
+            <div class="card__icon"><svg viewBox="0 0 32 32"><path d="M7 27V9l9-5 9 5v18"/><path d="M4 27h24M12 27v-7h8v7M13 13h6"/></svg></div>
+            <h3>Limited Company Accounts &amp; CT600s</h3>
+            <p>Year-end statutory accounts and corporation tax returns filed to Companies House and HMRC.</p>
+            <a href="#detail-limited-company-accounts" class="card__link" data-detail="detail-limited-company-accounts">Learn more <span>→</span></a>
           </article>
           <article class="glass card reveal" data-delay="100">
             <span class="card__num">02</span>
-            <div class="card__icon"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="m20 12-2.5 6.5L11 21l2.5-6.5z"/></svg></div>
-            <h3>Tax Advisory</h3>
-            <p>Built for your today.<br>Ready for tomorrow.</p>
-            <a href="#contact" class="card__link">Learn more <span>→</span></a>
+            <div class="card__icon"><svg viewBox="0 0 32 32"><path d="M6 25V15M13 25V9M20 25v-6M27 25V5"/><path d="M4 27h24"/></svg></div>
+            <h3>Management Accounts &amp; Reporting</h3>
+            <p>Monthly or quarterly management accounts, KPIs and commentary you can act on.</p>
+            <a href="#detail-management-accounts" class="card__link" data-detail="detail-management-accounts">Learn more <span>→</span></a>
           </article>
           <article class="glass card reveal" data-delay="200">
             <span class="card__num">03</span>
-            <div class="card__icon"><svg viewBox="0 0 32 32"><path d="M8 24c0-6 3-9 8-9s8 3 8 9"/><path d="M16 4v6M16 10a4 4 0 1 0 0 .01"/><path d="M5 27h22"/></svg></div>
-            <h3>Business Advisory</h3>
-            <p>Smarter strategy.<br>Stronger outcomes.</p>
-            <a href="#contact" class="card__link">Learn more <span>→</span></a>
+            <div class="card__icon"><svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12"/><path d="m20 12-2.5 6.5L11 21l2.5-6.5z"/></svg></div>
+            <h3>Tax Compliance &amp; Advisory</h3>
+            <p>Filings that are correct and on time, with planning advice when it matters.</p>
+            <a href="#detail-tax-compliance" class="card__link" data-detail="detail-tax-compliance">Learn more <span>→</span></a>
           </article>
           <article class="glass card reveal" data-delay="300">
             <span class="card__num">04</span>
-            <div class="card__icon"><svg viewBox="0 0 32 32"><rect x="4" y="9" width="18" height="12" rx="2"/><rect x="10" y="13" width="18" height="12" rx="2"/></svg></div>
-            <h3>Transaction Advisory</h3>
-            <p>Guidance for what's next.<br>Deal with confidence.</p>
-            <a href="#contact" class="card__link">Learn more <span>→</span></a>
+            <div class="card__icon"><svg viewBox="0 0 32 32"><rect x="5" y="4" width="22" height="24" rx="2"/><path d="M10 10h12M10 15h12M10 20h7"/></svg></div>
+            <h3>VAT Bookkeeping</h3>
+            <p>VAT-compliant bookkeeping and VAT returns submitted under Making Tax Digital.</p>
+            <a href="#detail-vat-bookkeeping" class="card__link" data-detail="detail-vat-bookkeeping">Learn more <span>→</span></a>
           </article>
+          <article class="glass card reveal" data-delay="0">
+            <span class="card__num">05</span>
+            <div class="card__icon"><svg viewBox="0 0 32 32"><circle cx="16" cy="11" r="5"/><path d="M6 27c0-5.5 4.5-9 10-9s10 3.5 10 9"/></svg></div>
+            <h3>Personal Tax Returns</h3>
+            <p>Self Assessment for directors, landlords and sole traders.</p>
+            <a href="#detail-personal-tax" class="card__link" data-detail="detail-personal-tax">Learn more <span>→</span></a>
+          </article>
+          <article class="glass card reveal" data-delay="100">
+            <span class="card__num">06</span>
+            <div class="card__icon"><svg viewBox="0 0 32 32"><circle cx="11" cy="12" r="4"/><circle cx="21" cy="12" r="4"/><path d="M4 26c0-4 3-7 7-7s7 3 7 7M14 26c0-4 3-7 7-7s7 3 7 7"/></svg></div>
+            <h3>Sole Trader, Partnership &amp; LLP Accounts</h3>
+            <p>Accounts and tax for unincorporated businesses and LLPs.</p>
+            <a href="#detail-sole-trader-partnership-llp" class="card__link" data-detail="detail-sole-trader-partnership-llp">Learn more <span>→</span></a>
+          </article>
+          <article class="glass card reveal" data-delay="200">
+            <span class="card__num">07</span>
+            <div class="card__icon"><svg viewBox="0 0 32 32"><path d="M5 10h18l-4-4M27 22H9l4 4"/><rect x="4" y="14" width="24" height="4" rx="1"/></svg></div>
+            <h3>Data Migration</h3>
+            <p>Moving your books between Xero, QuickBooks Online, Sage and spreadsheets, with reconciled opening balances.</p>
+            <a href="#detail-data-migration" class="card__link" data-detail="detail-data-migration">Learn more <span>→</span></a>
+          </article>
+          <article class="glass card reveal" data-delay="300">
+            <span class="card__num">08</span>
+            <div class="card__icon"><svg viewBox="0 0 32 32"><path d="M4 27h24M7 27V13l9-6 9 6v14"/><path d="M12 27v-6h8v6M16 7v6"/></svg></div>
+            <h3>CIS Returns</h3>
+            <p>Construction Industry Scheme monthly returns, subcontractor verifications and statements.</p>
+            <a href="#detail-cis-returns" class="card__link" data-detail="detail-cis-returns">Learn more <span>→</span></a>
+          </article>
+        </div>
+
+        <div class="details reveal" id="service-details">
+          <p class="eyebrow">Service details</p>
+          <details class="detail glass" id="detail-limited-company-accounts">
+            <summary><span class="detail__num">01</span><span class="detail__title">Limited Company Accounts &amp; CT600s</span><span class="detail__toggle" aria-hidden="true"></span></summary>
+            <div class="detail__body">
+              <!-- PRINCIPAL TO REPLACE: interim copy for Limited Company Accounts & CT600s -->
+              <div>
+                <h4>What's included</h4>
+                <p>Preparation of year-end statutory accounts under FRS 102 Section 1A or FRS 105, the CT600 corporation tax return and supporting computations, and iXBRL tagging. Filing to Companies House and HMRC within the statutory deadlines, with a clear summary of the figures before anything is submitted.</p>
+              </div>
+              <div>
+                <h4>Client benefit</h4>
+                <p>You meet both filing deadlines without chasing, understand your corporation tax position before it falls due, and start the next year with accounts that are reconciled and ready for lenders, investors or a future sale.</p>
+              </div>
+              <div>
+                <h4>What's outside scope</h4>
+                <p>Statutory audit, group consolidations, and R&amp;D tax credit claims are not included as standard. Where these are needed, they are quoted separately or referred to a specialist.</p>
+              </div>
+              <!-- END PRINCIPAL TO REPLACE -->
+              <a href="#contact" class="link-arrow">Discuss this service <span>→</span></a>
+            </div>
+          </details>
+          <details class="detail glass" id="detail-management-accounts">
+            <summary><span class="detail__num">02</span><span class="detail__title">Management Accounts &amp; Reporting</span><span class="detail__toggle" aria-hidden="true"></span></summary>
+            <div class="detail__body">
+              <!-- PRINCIPAL TO REPLACE: interim copy for Management Accounts & Reporting -->
+              <div>
+                <h4>What's included</h4>
+                <p>A monthly or quarterly pack covering profit and loss, balance sheet, cash position and the handful of KPIs that matter to your business, with short written commentary on what moved and why. Delivered to an agreed timetable after the month-end close.</p>
+              </div>
+              <div>
+                <h4>Client benefit</h4>
+                <p>Decisions are made on current numbers rather than last year's accounts. Trends, margin pressure and cash issues show up early enough to do something about them.</p>
+              </div>
+              <div>
+                <h4>What's outside scope</h4>
+                <p>Detailed budgeting models, board-pack design and investor reporting beyond the standard pack are scoped and agreed separately.</p>
+              </div>
+              <!-- END PRINCIPAL TO REPLACE -->
+              <a href="#contact" class="link-arrow">Discuss this service <span>→</span></a>
+            </div>
+          </details>
+          <details class="detail glass" id="detail-tax-compliance">
+            <summary><span class="detail__num">03</span><span class="detail__title">Tax Compliance &amp; Advisory</span><span class="detail__toggle" aria-hidden="true"></span></summary>
+            <div class="detail__body">
+              <!-- PRINCIPAL TO REPLACE: interim copy for Tax Compliance & Advisory -->
+              <div>
+                <h4>What's included</h4>
+                <p>Corporation tax, PAYE settlement considerations, dividend planning for owner-managed companies and a review of reliefs and allowances you may be entitled to claim. Deadlines are tracked and filings are prepared with a clear explanation of the position.</p>
+              </div>
+              <div>
+                <h4>Client benefit</h4>
+                <p>Fewer surprises at year end, a tax position you understand, and planning that is done before the year closes rather than after the opportunity has passed.</p>
+              </div>
+              <div>
+                <h4>What's outside scope</h4>
+                <p>Complex international structuring, trusts, inheritance tax planning and tax investigations are outside the standard service and are referred to or scoped with a specialist.</p>
+              </div>
+              <!-- END PRINCIPAL TO REPLACE -->
+              <a href="#contact" class="link-arrow">Discuss this service <span>→</span></a>
+            </div>
+          </details>
+          <details class="detail glass" id="detail-vat-bookkeeping">
+            <summary><span class="detail__num">04</span><span class="detail__title">VAT Bookkeeping</span><span class="detail__toggle" aria-hidden="true"></span></summary>
+            <div class="detail__body">
+              <!-- PRINCIPAL TO REPLACE: interim copy for VAT Bookkeeping -->
+              <div>
+                <h4>What's included</h4>
+                <p>Transaction coding with the correct VAT treatment, bank and supplier reconciliations, and quarterly VAT returns prepared and submitted through MTD-compatible software such as Xero or QuickBooks Online. Includes a review of partial exemption, reverse charge and scheme eligibility where relevant.</p>
+              </div>
+              <div>
+                <h4>Client benefit</h4>
+                <p>Returns are filed on time and reconcile to your books, VAT is not over- or under-claimed, and HMRC queries can be answered from records that are already in order.</p>
+              </div>
+              <div>
+                <h4>What's outside scope</h4>
+                <p>VAT registration applications, Option to Tax elections and customs or import agent work are handled as separate engagements.</p>
+              </div>
+              <!-- END PRINCIPAL TO REPLACE -->
+              <a href="#contact" class="link-arrow">Discuss this service <span>→</span></a>
+            </div>
+          </details>
+          <details class="detail glass" id="detail-personal-tax">
+            <summary><span class="detail__num">05</span><span class="detail__title">Personal Tax Returns</span><span class="detail__toggle" aria-hidden="true"></span></summary>
+            <div class="detail__body">
+              <!-- PRINCIPAL TO REPLACE: interim copy for Personal Tax Returns -->
+              <div>
+                <h4>What's included</h4>
+                <p>Preparation and filing of the Self Assessment return covering employment, dividends, rental income, self-employment and capital gains. Includes a reconciliation of payments on account and a clear statement of what is due and when.</p>
+              </div>
+              <div>
+                <h4>Client benefit</h4>
+                <p>The 31 January deadline is met without a last-minute scramble, allowable expenses and reliefs are claimed, and you know your liability months in advance.</p>
+              </div>
+              <div>
+                <h4>What's outside scope</h4>
+                <p>Non-UK resident and non-domicile matters, and returns involving complex share schemes or trusts, are scoped separately.</p>
+              </div>
+              <!-- END PRINCIPAL TO REPLACE -->
+              <a href="#contact" class="link-arrow">Discuss this service <span>→</span></a>
+            </div>
+          </details>
+          <details class="detail glass" id="detail-sole-trader-partnership-llp">
+            <summary><span class="detail__num">06</span><span class="detail__title">Sole Trader, Partnership &amp; LLP Accounts</span><span class="detail__toggle" aria-hidden="true"></span></summary>
+            <div class="detail__body">
+              <!-- PRINCIPAL TO REPLACE: interim copy for Sole Trader, Partnership & LLP Accounts -->
+              <div>
+                <h4>What's included</h4>
+                <p>Annual accounts for sole traders, partnerships and LLPs, the partnership return (SA800) and partners' individual returns where required, and LLP accounts filed at Companies House. Includes guidance on the basis period reform and cash versus accruals accounting.</p>
+              </div>
+              <div>
+                <h4>Client benefit</h4>
+                <p>Each partner's share of profit and tax is clear and agreed, filings are made on time, and the accounts support loan or mortgage applications when needed.</p>
+              </div>
+              <div>
+                <h4>What's outside scope</h4>
+                <p>Partnership agreements, profit-sharing disputes and incorporation advice are provided as separate advisory work.</p>
+              </div>
+              <!-- END PRINCIPAL TO REPLACE -->
+              <a href="#contact" class="link-arrow">Discuss this service <span>→</span></a>
+            </div>
+          </details>
+          <details class="detail glass" id="detail-data-migration">
+            <summary><span class="detail__num">07</span><span class="detail__title">Data Migration</span><span class="detail__toggle" aria-hidden="true"></span></summary>
+            <div class="detail__body">
+              <!-- PRINCIPAL TO REPLACE: interim copy for Data Migration -->
+              <div>
+                <h4>What's included</h4>
+                <p>A planned migration of your chart of accounts, customers, suppliers, open invoices and bills, bank feeds and historical balances to the new platform. Opening balances are reconciled to the closing trial balance of the old system and signed off before go-live.</p>
+              </div>
+              <div>
+                <h4>Client benefit</h4>
+                <p>No gap in your records, no duplicated or missing transactions, and a new system you can use from day one with confidence that the numbers agree.</p>
+              </div>
+              <div>
+                <h4>What's outside scope</h4>
+                <p>Custom integrations, app marketplace configuration and staff training beyond a handover session are quoted separately.</p>
+              </div>
+              <!-- END PRINCIPAL TO REPLACE -->
+              <a href="#contact" class="link-arrow">Discuss this service <span>→</span></a>
+            </div>
+          </details>
+          <details class="detail glass" id="detail-cis-returns">
+            <summary><span class="detail__num">08</span><span class="detail__title">CIS Returns</span><span class="detail__toggle" aria-hidden="true"></span></summary>
+            <div class="detail__body">
+              <!-- PRINCIPAL TO REPLACE: interim copy for CIS Returns -->
+              <div>
+                <h4>What's included</h4>
+                <p>Monthly CIS returns (CIS300) prepared and submitted to HMRC by the 19th, subcontractor verification, deduction statements issued to subcontractors, and reconciliation of CIS suffered for subcontractor companies claiming against PAYE.</p>
+              </div>
+              <div>
+                <h4>Client benefit</h4>
+                <p>Penalties for late or incorrect returns are avoided, subcontractors receive their statements on time, and deductions suffered are recovered promptly.</p>
+              </div>
+              <div>
+                <h4>What's outside scope</h4>
+                <p>Gross payment status applications, employment status disputes and payroll for directly employed staff are handled as separate engagements.</p>
+              </div>
+              <!-- END PRINCIPAL TO REPLACE -->
+              <a href="#contact" class="link-arrow">Discuss this service <span>→</span></a>
+            </div>
+          </details>
+        </div>
+
+        <div class="industries reveal">
+          <p class="eyebrow">Industries we work with</p>
+          <ul class="chips">
+            <li>Retail</li>
+            <li>Manufacturing</li>
+            <li>E-Commerce</li>
+            <li>Construction</li>
+            <li>Media</li>
+            <li>YouTube creators</li>
+            <li>Agencies</li>
+            <li>Software &amp; Tech</li>
+            <li>Hospitality</li>
+            <li>Finance</li>
+            <li>Non-profits</li>
+          </ul>
+          <p class="industries__note">Serving businesses across the United Kingdom.</p>
         </div>
       </div>
     </section>
@@ -368,10 +589,14 @@
         </div>
         <div class="footer__col">
           <h4>Services</h4>
-          <a href="#services">Accounting &amp; Assurance</a>
-          <a href="#services">Tax Advisory</a>
-          <a href="#services">Business Advisory</a>
-          <a href="#services">Transaction Advisory</a>
+          <a href="#detail-limited-company-accounts" data-detail="detail-limited-company-accounts">Limited Company Accounts &amp; CT600s</a>
+          <a href="#detail-management-accounts" data-detail="detail-management-accounts">Management Accounts &amp; Reporting</a>
+          <a href="#detail-tax-compliance" data-detail="detail-tax-compliance">Tax Compliance &amp; Advisory</a>
+          <a href="#detail-vat-bookkeeping" data-detail="detail-vat-bookkeeping">VAT Bookkeeping</a>
+          <a href="#detail-personal-tax" data-detail="detail-personal-tax">Personal Tax Returns</a>
+          <a href="#detail-sole-trader-partnership-llp" data-detail="detail-sole-trader-partnership-llp">Sole Trader, Partnership &amp; LLP Accounts</a>
+          <a href="#detail-data-migration" data-detail="detail-data-migration">Data Migration</a>
+          <a href="#detail-cis-returns" data-detail="detail-cis-returns">CIS Returns</a>
         </div>
         <div class="footer__col">
           <h4>Contact</h4>
