@@ -1026,3 +1026,121 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* ---------- Stats: note + longer labels ---------- */
 .stats__note { margin-top: 20px; max-width: 40ch; font-size: 14px; line-height: 1.7; color: var(--text-dim); }
 .stats__list > li > span { display: block; max-width: 18ch; margin-inline: auto; line-height: 1.5; }
+
+/* =========================================================
+   DASHBOARD — tooltips, series tabs, definitions, caption
+   ========================================================= */
+.tip {
+  display: inline-grid;
+  place-items: center;
+  width: 13px; height: 13px;
+  margin-left: 4px;
+  border-radius: 50%;
+  border: 1px solid rgba(246, 245, 239, 0.3);
+  font-size: 8px;
+  font-style: italic;
+  font-family: var(--serif);
+  color: var(--text-dim);
+  vertical-align: middle;
+  position: relative;
+  cursor: help;
+}
+.tip::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 50%; bottom: calc(100% + 8px);
+  transform: translateX(-50%) translateY(4px);
+  width: max-content;
+  max-width: 180px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(14, 19, 18, 0.96);
+  border: 1px solid rgba(246, 245, 239, 0.14);
+  color: var(--ivory);
+  font-family: var(--sans);
+  font-style: normal;
+  font-size: 10px;
+  line-height: 1.45;
+  text-align: left;
+  white-space: normal;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s, transform 0.3s var(--ease-out);
+  z-index: 5;
+}
+.tip:hover::after, .tip:focus-visible::after { opacity: 1; transform: translateX(-50%) translateY(0); }
+.tip:focus-visible { outline: 1px solid var(--sage); }
+.dash__tabs { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.dash__tabs button {
+  font-size: 8.5px;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  transition: color 0.3s, border-color 0.3s, background 0.3s;
+}
+.dash__tabs button:hover { color: var(--ivory); }
+.dash__tabs button.is-active { color: var(--ivory); border-color: rgba(246, 245, 239, 0.2); background: rgba(246, 245, 239, 0.06); }
+.dash__tabs button:focus-visible { outline: 1px solid var(--sage); }
+.dash__defs { margin-top: 8px; font-size: 9px; line-height: 1.4; color: var(--text-faint); }
+.dash__sample { margin-left: 6px; padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(246, 245, 239, 0.14); font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); }
+.dash__caption { margin-top: 14px; text-align: right; font-size: 10.5px; letter-spacing: 0.04em; color: var(--text-faint); }
+.chart.is-drawn .chart__line { animation: none; stroke-dasharray: none; stroke-dashoffset: 0; }
+
+/* =========================================================
+   CALCULATORS
+   ========================================================= */
+.calculators { background: var(--bg-deep); }
+.badge {
+  display: inline-block;
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--sage);
+  padding: 9px 14px;
+  border: 1px solid rgba(183, 199, 163, 0.4);
+  border-radius: 999px;
+}
+.calc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: start; }
+.calc { padding: 30px 28px 26px; }
+.calc h3 { font-family: var(--serif); font-weight: 400; font-size: 26px; color: var(--ivory); margin-bottom: 8px; }
+.calc__intro { font-size: 13px; line-height: 1.6; color: var(--text-dim); margin-bottom: 22px; }
+.field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+.field label, .field legend { font-size: 11px; letter-spacing: 0.06em; color: var(--text-dim); }
+.field .optional { color: var(--text-faint); font-size: 10px; margin-left: 4px; }
+.field input[type="number"], .field input[type="text"], .field input[type="email"], .field select, .field textarea {
+  width: 100%;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ivory);
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(246, 245, 239, 0.14);
+  background: rgba(14, 19, 18, 0.45);
+  transition: border-color 0.3s, background 0.3s, box-shadow 0.3s;
+  -moz-appearance: textfield;
+}
+.field input::-webkit-outer-spin-button, .field input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: rgba(183, 199, 163, 0.7); background: rgba(14, 19, 18, 0.6); box-shadow: 0 0 0 3px rgba(183, 199, 163, 0.12); }
+.field input::placeholder, .field textarea::placeholder { color: var(--text-faint); }
+.field input[aria-invalid="true"], .field select[aria-invalid="true"], .field textarea[aria-invalid="true"] { border-color: rgba(246, 245, 239, 0.6); }
+.field__hint { font-size: 10.5px; color: var(--text-faint); line-height: 1.4; }
+.field--radios { border: 0; padding: 0; margin: 0 0 14px; gap: 8px; }
+.field--radios label { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--ivory); cursor: pointer; }
+.field--radios input { accent-color: var(--sage); width: 14px; height: 14px; margin: 0; }
+.calc__out { margin: 20px 0 10px; padding: 14px 0 4px; border-top: 1px solid rgba(246, 245, 239, 0.08); }
+.calc__out div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 0; }
+.calc__out dt { font-size: 12px; color: var(--text-dim); }
+.calc__out dd { margin: 0; font-family: var(--serif); font-size: 22px; color: var(--ivory); font-variant-numeric: tabular-nums; }
+.calc__error { font-size: 12px; color: var(--ivory); padding: 8px 10px; border-radius: 8px; background: rgba(246, 245, 239, 0.06); margin-bottom: 10px; }
+.calc__formula { margin: 8px 0 14px; font-size: 12px; color: var(--text-dim); }
+.calc__formula summary { cursor: pointer; font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); padding: 6px 0; list-style: none; }
+.calc__formula summary::-webkit-details-marker { display: none; }
+.calc__formula summary::after { content: " +"; }
+.calc__formula[open] summary::after { content: " −"; }
+.calc__formula p { margin-top: 8px; line-height: 1.6; }
+.calc__caveat { font-size: 11px; line-height: 1.5; color: var(--text-faint); padding-top: 12px; border-top: 1px solid rgba(246, 245, 239, 0.08); }
+@media (max-width: 1024px) { .calc-grid { grid-template-columns: 1fr; max-width: 560px; } }

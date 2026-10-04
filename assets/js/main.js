@@ -138,29 +138,161 @@
   $$('.stats [data-count]').forEach((el) => counterObserver.observe(el));
 
   /* ------------------------------------------------- chart */
+  // Illustrative demo data in GBP thousands, Jan–May 2026. Not client figures.
+  const SERIES = {
+    revenue:  { label: 'Revenue · Jan–May 2026',       def: 'Sales invoiced each month, excluding VAT.',                      data: [31.2, 33.8, 36.1, 40.4, 44.9] },
+    expenses: { label: 'Expenses · Jan–May 2026',      def: 'Operating costs incurred each month, excluding VAT.',           data: [15.1, 14.6, 14.9, 13.8, 13.9] },
+    profit:   { label: 'Profit / Loss · Jan–May 2026', def: 'Revenue less expenses for each month, before corporation tax.', data: [16.1, 19.2, 21.2, 26.6, 31.0] },
+    cashflow: { label: 'Cash flow · Jan–May 2026',     def: 'Net movement in bank balances each month after tax payments.',  data: [9.4, 12.8, 7.9, 18.3, 22.6] },
+  };
+  const chart = $('#chart');
   const chartLine = $('#chartLine');
+  const chartArea = $('.chart__area');
   const chartDot = $('#chartDot');
   const chartHalo = $('#chartHalo');
-  if (chartLine && chartDot && !reduced) {
-    const len = chartLine.getTotalLength();
-    chartLine.style.strokeDasharray = len;
-    chartLine.style.strokeDashoffset = len;
-    let start = null;
-    const drawMs = 2600, delayMs = 400;
-    const chart = $('#chart');
-    function moveDot(now) {
-      if (!chart.classList.contains('is-in')) { requestAnimationFrame(moveDot); return; }
-      if (start === null) start = now + delayMs;
-      const p = Math.min(1, Math.max(0, (now - start) / drawMs));
-      // match the CSS ease-in-out used for the stroke
-      const eased = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
-      const pt = chartLine.getPointAtLength(len * eased);
-      chartDot.setAttribute('cx', pt.x); chartDot.setAttribute('cy', pt.y);
-      chartHalo.setAttribute('cx', pt.x); chartHalo.setAttribute('cy', pt.y);
-      if (p < 1) requestAnimationFrame(moveDot);
-    }
-    requestAnimationFrame(moveDot);
+  const chartLabel = $('#chartLabel');
+  const chartDef = $('#chartDef');
+
+  function toPoints(data) {
+    const max = Math.max(...Object.values(SERIES).map((s) => Math.max(...s.data)));
+    const W = 320, top = 10, bottom = 118;
+    return data.map((v, i) => [i * (W / (data.length - 1)), bottom - (v / max) * (bottom - top)]);
   }
+  function smoothPath(pts) {
+    let d = `M${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+      const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+      const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+      d += ` C${c1[0].toFixed(1)},${c1[1].toFixed(1)} ${c2[0].toFixed(1)},${c2[1].toFixed(1)} ${p2[0].toFixed(1)},${p2[1].toFixed(1)}`;
+    }
+    return d;
+  }
+  function applySeries(pts) {
+    const d = smoothPath(pts);
+    chartLine.setAttribute('d', d);
+    chartArea.setAttribute('d', `${d} L320,130 L0,130 Z`);
+  }
+
+  if (chart && chartLine) {
+    let current = toPoints(SERIES.profit.data);
+    applySeries(current);
+
+    // first draw: stroke reveal with a travelling dot
+    if (!reduced) {
+      const len = chartLine.getTotalLength();
+      chartLine.style.strokeDasharray = len;
+      chartLine.style.strokeDashoffset = len;
+      let start = null;
+      const drawMs = 2600, delayMs = 400;
+      function moveDot(now) {
+        if (!chart.classList.contains('is-in')) { requestAnimationFrame(moveDot); return; }
+        if (start === null) start = now + delayMs;
+        const p = Math.min(1, Math.max(0, (now - start) / drawMs));
+        const eased = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+        const pt = chartLine.getPointAtLength(chartLine.getTotalLength() * eased);
+        chartDot.setAttribute('cx', pt.x); chartDot.setAttribute('cy', pt.y);
+        chartHalo.setAttribute('cx', pt.x); chartHalo.setAttribute('cy', pt.y);
+        if (p < 1) requestAnimationFrame(moveDot); else chart.classList.add('is-drawn');
+      }
+      requestAnimationFrame(moveDot);
+    } else {
+      chart.classList.add('is-drawn');
+    }
+
+    // series switching with an eased morph
+    let morphRaf;
+    $$('.dash__tabs [data-series]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.series;
+        const target = toPoints(SERIES[key].data);
+        $$('.dash__tabs [data-series]').forEach((b) => { b.classList.toggle('is-active', b === btn); b.setAttribute('aria-selected', String(b === btn)); });
+        chartLabel.textContent = SERIES[key].label;
+        chartDef.textContent = SERIES[key].def;
+        chartLine.style.strokeDasharray = ''; chartLine.style.strokeDashoffset = '';
+        chartLine.style.animation = 'none';
+        const from = current.map((p) => p.slice());
+        const t0 = performance.now();
+        cancelAnimationFrame(morphRaf);
+        const step = (now) => {
+          const p = reduced ? 1 : Math.min(1, (now - t0) / 700);
+          const e = 1 - Math.pow(1 - p, 3);
+          current = from.map((pt, i) => [pt[0], pt[1] + (target[i][1] - pt[1]) * e]);
+          applySeries(current);
+          const last = current[current.length - 1];
+          chartDot.setAttribute('cx', last[0]); chartDot.setAttribute('cy', last[1]);
+          chartHalo.setAttribute('cx', last[0]); chartHalo.setAttribute('cy', last[1]);
+          if (p < 1) morphRaf = requestAnimationFrame(step);
+        };
+        morphRaf = requestAnimationFrame(step);
+      });
+    });
+  }
+
+  /* -------------------------------------------- calculators */
+  // UK VAT standard rate. Effective from 4 January 2011 (HMRC). Update here only if the rate changes.
+  const UK_VAT_STANDARD_RATE = 0.20;
+  const UK_VAT_RATE_EFFECTIVE = '4 January 2011';
+  $$('[data-vat-rate]').forEach((el) => { el.textContent = (UK_VAT_STANDARD_RATE * 100).toFixed(0) + '%'; });
+  $$('[data-vat-date]').forEach((el) => { el.textContent = UK_VAT_RATE_EFFECTIVE; });
+
+  const gbp = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const pct = (v) => (Number.isFinite(v) ? v.toFixed(1) + '%' : '—');
+  const num = (form, name) => {
+    const el = form.elements[name];
+    const v = parseFloat(el.value);
+    const bad = el.value !== '' && (!Number.isFinite(v) || v < 0);
+    el.setAttribute('aria-invalid', String(bad));
+    return el.value === '' ? NaN : v;
+  };
+  const setOut = (form, key, val) => { const el = form.querySelector(`[data-out="${key}"]`); if (el) el.textContent = val; };
+  const setError = (form, msg) => { const el = form.querySelector('[data-error]'); el.textContent = msg || ''; el.hidden = !msg; };
+
+  function bindCalc(form, compute) {
+    if (!form) return;
+    const run = () => compute(form);
+    form.addEventListener('input', run);
+    form.addEventListener('submit', (e) => { e.preventDefault(); run(); });
+    run();
+  }
+
+  bindCalc($('#calcMargin'), (f) => {
+    const revenue = num(f, 'revenue'), cogs = num(f, 'cogs'), opex = num(f, 'opex');
+    if ([revenue, cogs, opex].some((v) => Number.isNaN(v))) { setError(f, 'Enter revenue, cost of sales and operating expenses.'); ['gross', 'grossPct', 'net', 'netPct'].forEach((k) => setOut(f, k, '—')); return; }
+    if ([revenue, cogs, opex].some((v) => v < 0)) { setError(f, 'Values cannot be negative.'); return; }
+    if (revenue === 0) { setError(f, 'Revenue must be greater than zero to calculate a margin.'); ['grossPct', 'netPct'].forEach((k) => setOut(f, k, '—')); setOut(f, 'gross', gbp.format(-cogs)); setOut(f, 'net', gbp.format(-cogs - opex)); return; }
+    setError(f, '');
+    const gross = revenue - cogs, net = gross - opex;
+    setOut(f, 'gross', gbp.format(gross));
+    setOut(f, 'grossPct', pct(gross / revenue * 100));
+    setOut(f, 'net', gbp.format(net));
+    setOut(f, 'netPct', pct(net / revenue * 100));
+  });
+
+  bindCalc($('#calcBreakEven'), (f) => {
+    const fixed = num(f, 'fixed'), cm = num(f, 'cm'), price = num(f, 'price');
+    if (Number.isNaN(fixed) || Number.isNaN(cm)) { setError(f, 'Enter fixed costs and a contribution margin percentage.'); setOut(f, 'revenue', '—'); setOut(f, 'units', '—'); return; }
+    if (fixed < 0 || cm < 0) { setError(f, 'Values cannot be negative.'); return; }
+    if (cm === 0 || cm > 100) { setError(f, 'Contribution margin must be between 0 and 100%.'); setOut(f, 'revenue', '—'); setOut(f, 'units', '—'); return; }
+    setError(f, '');
+    const rev = fixed / (cm / 100);
+    setOut(f, 'revenue', gbp.format(rev));
+    setOut(f, 'units', Number.isFinite(price) && price > 0 ? Math.ceil(rev / price).toLocaleString('en-GB') + ' units' : 'Enter a selling price');
+  });
+
+  bindCalc($('#calcVat'), (f) => {
+    const amount = num(f, 'amount');
+    const mode = f.elements.mode.value;
+    if (Number.isNaN(amount)) { setError(f, 'Enter an amount.'); ['net', 'vat', 'gross'].forEach((k) => setOut(f, k, '—')); return; }
+    if (amount < 0) { setError(f, 'Amount cannot be negative.'); return; }
+    setError(f, '');
+    let net, gross;
+    if (mode === 'add') { net = amount; gross = amount * (1 + UK_VAT_STANDARD_RATE); }
+    else { gross = amount; net = amount / (1 + UK_VAT_STANDARD_RATE); }
+    setOut(f, 'net', gbp.format(net));
+    setOut(f, 'vat', gbp.format(gross - net));
+    setOut(f, 'gross', gbp.format(gross));
+  });
 
   /* -------------------------------------------------- tilt */
   const dash = $('#dash');

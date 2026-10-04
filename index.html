@@ -40,7 +40,8 @@
       <nav class="nav__links" aria-label="Primary">
         <a href="#top" class="is-active">Home</a>
         <a href="#services">Services</a>
-        <a href="#insights">Insights</a>
+        <a href="#calculators">Calculators</a>
+        <a href="#case-studies">Case Studies</a>
         <a href="#about">About</a>
       </nav>
       <div class="nav__actions">
@@ -132,27 +133,32 @@
 
               <div class="dash__stats">
                 <div class="dash__stat">
-                  <small>Total Revenue</small>
-                  <strong>$<span data-count="248650" data-format="comma">0</span></strong>
-                  <em class="up">↑ 12.3% <span>vs. last quarter</span></em>
+                  <small>Total Revenue <button type="button" class="tip" aria-label="Definition of total revenue" data-tip="Sales invoiced in the period, excluding VAT.">i</button></small>
+                  <strong>£<span data-count="186400" data-format="comma">0</span></strong>
+                  <em class="up">↑ 12.3% <span>vs. previous period</span></em>
                 </div>
                 <div class="dash__stat">
-                  <small>Total Expenses</small>
-                  <strong>$<span data-count="96320" data-format="comma">0</span></strong>
-                  <em class="down">↓ 12.2% <span>vs. last quarter</span></em>
+                  <small>Total Expenses <button type="button" class="tip" aria-label="Definition of total expenses" data-tip="Operating costs incurred in the period, excluding VAT.">i</button></small>
+                  <strong>£<span data-count="72250" data-format="comma">0</span></strong>
+                  <em class="down">↓ 6.8% <span>vs. previous period</span></em>
                 </div>
                 <div class="dash__stat">
-                  <small>Net Profit</small>
-                  <strong>$<span data-count="152330" data-format="comma">0</span></strong>
-                  <em class="up">↑ 14.7% <span>vs. last quarter</span></em>
+                  <small>Net Profit <button type="button" class="tip" aria-label="Definition of net profit" data-tip="Revenue less expenses, before corporation tax.">i</button></small>
+                  <strong>£<span data-count="114150" data-format="comma">0</span></strong>
+                  <em class="up">↑ 18.4% <span>vs. previous period</span></em>
                 </div>
               </div>
 
               <div class="dash__row">
                 <div class="dash__chart">
                   <div class="dash__chart-head">
-                    <small>Profit Trend</small>
-                    <span class="dash__legend"><i></i>Net profit</span>
+                    <small id="chartLabel">Profit / Loss · Jan–May 2026</small>
+                    <div class="dash__tabs" role="tablist" aria-label="Chart series">
+                      <button type="button" role="tab" data-series="revenue" aria-selected="false">Revenue</button>
+                      <button type="button" role="tab" data-series="expenses" aria-selected="false">Expenses</button>
+                      <button type="button" role="tab" data-series="profit" aria-selected="true" class="is-active">Profit/Loss</button>
+                      <button type="button" role="tab" data-series="cashflow" aria-selected="false">Cash flow</button>
+                    </div>
                   </div>
                   <svg viewBox="0 0 320 130" preserveAspectRatio="none" class="chart" id="chart" aria-hidden="true">
                     <defs>
@@ -180,20 +186,22 @@
                     <circle class="chart__halo" id="chartHalo" r="9" fill="#B7C7A3" opacity=".25"/>
                   </svg>
                   <div class="chart__axis"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span></div>
+                  <p class="dash__defs" id="chartDef">Revenue less expenses for each month, before corporation tax.</p>
                 </div>
 
                 <div class="dash__insights">
-                  <small>Key Insights</small>
+                  <small>Key Insights <span class="dash__sample">Sample text</span></small>
                   <ul>
-                    <li>Revenue increased by 13.5% compared to last quarter.</li>
-                    <li>Operating expenses are under budget by 8.2%.</li>
-                    <li>Net profit margin improved to 38.7%.</li>
+                    <li>Revenue is ahead of the previous period, driven by repeat customers.</li>
+                    <li>Operating expenses are tracking under the agreed budget.</li>
+                    <li>Net profit margin has improved on the previous period.</li>
                   </ul>
-                  <a href="#insights" class="dash__link">View full report <span>→</span></a>
+                  <a href="#case-studies" class="dash__link">View case studies <span>→</span></a>
                 </div>
               </div>
             </div>
           </div>
+          <p class="dash__caption">Illustrative demo data — not client figures.</p>
         </div>
       </div>
 
@@ -520,6 +528,112 @@
               <figcaption>Xero Certified</figcaption>
             </figure>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ CALCULATORS ============================ -->
+    <section class="calculators section" id="calculators">
+      <div class="container">
+        <div class="section__head split">
+          <div>
+            <p class="eyebrow reveal">Calculators</p>
+            <h2 class="title reveal" data-delay="80">Quick estimates,<br>UK figures.</h2>
+          </div>
+          <div class="section__aside reveal" data-delay="160">
+            <p>Three simple tools for a first look at margins, break-even and VAT. Everything runs in your browser; nothing is stored or sent.</p>
+            <span class="badge">Estimates only — UK figures</span>
+          </div>
+        </div>
+
+        <div class="calc-grid">
+          <!-- Profit margin -->
+          <form class="calc glass reveal" id="calcMargin" novalidate>
+            <h3>Profit margin</h3>
+            <p class="calc__intro">Gross and net margin from revenue, cost of sales and operating expenses.</p>
+            <div class="field">
+              <label for="pm-revenue">Revenue (£)</label>
+              <input id="pm-revenue" name="revenue" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="120000">
+            </div>
+            <div class="field">
+              <label for="pm-cogs">Cost of sales (£)</label>
+              <input id="pm-cogs" name="cogs" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="48000">
+            </div>
+            <div class="field">
+              <label for="pm-opex">Operating expenses (£)</label>
+              <input id="pm-opex" name="opex" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="36000">
+            </div>
+            <dl class="calc__out" aria-live="polite">
+              <div><dt>Gross profit</dt><dd data-out="gross">—</dd></div>
+              <div><dt>Gross margin</dt><dd data-out="grossPct">—</dd></div>
+              <div><dt>Net profit</dt><dd data-out="net">—</dd></div>
+              <div><dt>Net margin</dt><dd data-out="netPct">—</dd></div>
+            </dl>
+            <p class="calc__error" data-error hidden></p>
+            <details class="calc__formula">
+              <summary>Formula</summary>
+              <p>Gross margin = (Revenue − Cost of sales) ÷ Revenue × 100<br>Net margin = (Revenue − Cost of sales − Operating expenses) ÷ Revenue × 100</p>
+              <p>No statutory rate is used. Figures exclude VAT and corporation tax.</p>
+            </details>
+            <p class="calc__caveat">For guidance only. Confirm figures with your accountant before acting.</p>
+          </form>
+
+          <!-- Break-even -->
+          <form class="calc glass reveal" id="calcBreakEven" data-delay="100" novalidate>
+            <h3>Break-even</h3>
+            <p class="calc__intro">The revenue needed to cover fixed costs at your contribution margin.</p>
+            <div class="field">
+              <label for="be-fixed">Fixed costs per period (£)</label>
+              <input id="be-fixed" name="fixed" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="60000">
+            </div>
+            <div class="field">
+              <label for="be-cm">Contribution margin (%)</label>
+              <input id="be-cm" name="cm" type="number" inputmode="decimal" min="0" max="100" step="0.1" placeholder="0" value="40">
+              <small class="field__hint">Contribution margin = (Price − Variable cost) ÷ Price × 100</small>
+            </div>
+            <div class="field">
+              <label for="be-price">Average selling price per unit (£) <span class="optional">optional</span></label>
+              <input id="be-price" name="price" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+            </div>
+            <dl class="calc__out" aria-live="polite">
+              <div><dt>Break-even revenue</dt><dd data-out="revenue">—</dd></div>
+              <div><dt>Break-even units</dt><dd data-out="units">—</dd></div>
+            </dl>
+            <p class="calc__error" data-error hidden></p>
+            <details class="calc__formula">
+              <summary>Formula</summary>
+              <p>Break-even revenue = Fixed costs ÷ (Contribution margin % ÷ 100)<br>Break-even units = Break-even revenue ÷ Selling price per unit</p>
+              <p>No statutory rate is used.</p>
+            </details>
+            <p class="calc__caveat">For guidance only. Confirm figures with your accountant before acting.</p>
+          </form>
+
+          <!-- VAT -->
+          <form class="calc glass reveal" id="calcVat" data-delay="200" novalidate>
+            <h3>VAT</h3>
+            <p class="calc__intro">Add or remove VAT at the UK standard rate of <span data-vat-rate>20%</span>.</p>
+            <div class="field">
+              <label for="vat-amount">Amount (£)</label>
+              <input id="vat-amount" name="amount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" value="1000">
+            </div>
+            <fieldset class="field field--radios">
+              <legend>Direction</legend>
+              <label><input type="radio" name="mode" value="add" checked> Add VAT to a net amount</label>
+              <label><input type="radio" name="mode" value="remove"> Remove VAT from a gross amount</label>
+            </fieldset>
+            <dl class="calc__out" aria-live="polite">
+              <div><dt>Net (excl. VAT)</dt><dd data-out="net">—</dd></div>
+              <div><dt>VAT</dt><dd data-out="vat">—</dd></div>
+              <div><dt>Gross (incl. VAT)</dt><dd data-out="gross">—</dd></div>
+            </dl>
+            <p class="calc__error" data-error hidden></p>
+            <details class="calc__formula">
+              <summary>Formula</summary>
+              <p>Add VAT: Gross = Net × (1 + rate)<br>Remove VAT: Net = Gross ÷ (1 + rate)</p>
+              <p>Standard rate <span data-vat-rate>20%</span>, effective from <span data-vat-date>4 January 2011</span>. Reduced and zero rates are not applied by this tool.</p>
+            </details>
+            <p class="calc__caveat">For guidance only. Confirm figures with your accountant before acting.</p>
+          </form>
         </div>
       </div>
     </section>
