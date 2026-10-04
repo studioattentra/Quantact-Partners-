@@ -1,5 +1,8 @@
 # Changes applied from the principal's brief
 
+## Security hardening, 4 October 2026
+Full report in `SECURITY.md`. In short: strict Content-Security-Policy and the other standard security headers generated from one source file into `dist/_headers` and `dist/.htaccess`; only a clean `dist/` folder is deployed (no drafts, templates, scripts or config exposed); admin editor pinned with Subresource Integrity and no inline scripts; Markdown sanitised at build time; form length limits, honeypot and resend cooldown; fonts self-hosted so no third-party request remains; dependencies updated (marked 18, js-yaml 5, Three.js 0.186, sanitize-html, bcryptjs); `npm run audit` scans for exposed files and secrets; `npm run hash-password` produces bcrypt hashes for an optional Basic-Auth lock on `/admin/`. Git history scan found no secrets, but the principal's old Gmail address and phone number remain in early commits (see SECURITY.md §2).
+
 ## Update, 4 October 2026 (later the same day)
 - The principal's portrait is now in the About section frame (`assets/img/umer-aijaz.jpg`, lightly desaturated to sit with the palette).
 - All bracketed placeholders were removed from the site. Contact now points to the enquiry form; legal pages say registered details are available on request; the Calendly button was replaced by a "Book your free call" button that jumps to the form. The form's email fallback delivers to the Gmail address originally supplied, set as the `FIRM_EMAIL` constant in `assets/js/main.js`, until a firm mailbox exists.
