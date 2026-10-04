@@ -22,7 +22,7 @@ import { fileURLToPath } from 'node:url';
 import { marked } from 'marked';
 import { load as loadYaml } from 'js-yaml';
 import sanitizeHtml from 'sanitize-html';
-import { netlifyHeaders, htaccess } from './security-headers.mjs';
+import { htaccess } from './security-headers.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = path.join(ROOT, 'content', 'case-studies');
@@ -200,12 +200,11 @@ async function main() {
   // ---- Deployable folder: only public files, plus the security headers
   if (existsSync(DIST)) await rm(DIST, { recursive: true });
   await mkdir(DIST, { recursive: true });
-  const publicEntries = ['index.html', 'privacy.html', 'disclaimer.html', 'robots.txt', 'sitemap.xml', 'assets', 'case-studies', 'admin'];
+  const publicEntries = ['index.html', 'privacy.html', 'disclaimer.html', 'robots.txt', 'sitemap.xml', 'assets', 'case-studies', 'admin', 'api'];
   for (const entry of publicEntries) {
     const from = path.join(ROOT, entry);
     if (existsSync(from)) await cp(from, path.join(DIST, entry), { recursive: true });
   }
-  await writeFile(path.join(DIST, '_headers'), netlifyHeaders());
   await writeFile(path.join(DIST, '.htaccess'), htaccess());
 
   console.log(`Built ${live.length} case stud${live.length === 1 ? 'y' : 'ies'} and ${legal.length} legal pages; deployable copy in dist/.`);

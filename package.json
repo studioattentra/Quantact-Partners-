@@ -9,7 +9,8 @@
     "hash-password": "node scripts/hash-password.mjs",
     "audit": "npm audit --omit=dev && node scripts/check-exposure.mjs",
     "serve": "python3 -m http.server 8000 --directory dist",
-    "vendor:three": "esbuild node_modules/three/build/three.module.js --bundle --minify --format=esm --target=es2020 --legal-comments=inline --outfile=assets/vendor/three.module.min.js"
+    "vendor:three": "esbuild node_modules/three/build/three.module.js --bundle --minify --format=esm --target=es2020 --legal-comments=inline --outfile=assets/vendor/three.module.min.js",
+    "lint:php": "for f in api/*.php admin/oauth/*.php deploy/*.php; do php -l \"$f\" >/dev/null || exit 1; done; echo 'PHP syntax ok'"
   },
   "dependencies": {
     "@fontsource/cormorant-garamond": "^5.3.0",

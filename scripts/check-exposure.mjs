@@ -20,10 +20,11 @@ const FORBIDDEN = [
   /(^|\/)\.env(\..*)?$/, /\.pem$/, /\.key$/, /\.p12$/, /\.pfx$/, /\.htpasswd$/, /(^|\/)\.git(\/|$)/,
   /(^|\/)node_modules(\/|$)/, /\.map$/, /\.log$/, /\.sql$/, /\.bak$/, /\.zip$/, /\.tar(\.gz)?$/,
   /(^|\/)package(-lock)?\.json$/, /(^|\/)netlify\.toml$/, /(^|\/)(templates|content|scripts)(\/|$)/,
-  /(^|\/)CHANGES\.md$/, /(^|\/)README\.md$/, /(^|\/)SECURITY\.md$/, /\.mjs$/,
+  /(^|\/)CHANGES\.md$/, /(^|\/)README\.md$/, /(^|\/)SECURITY\.md$/, /(^|\/)HOSTINGER\.md$/, /\.mjs$/,
+  /(^|\/)api\/config\.php$/, /(^|\/)site-config(\.example)?\.php$/, /(^|\/)deploy(\/|$)/, /(^|\/)_headers$/,
 ];
-const ALLOWED_DATA = [/(^|\/)admin\/config\.yml$/, /(^|\/)case-studies\/index\.json$/, /(^|\/)robots\.txt$/, /(^|\/)sitemap\.xml$/, /(^|\/)_headers$/, /(^|\/)\.htaccess$/];
-const TEXT = /\.(html|css|js|json|yml|yaml|txt|xml|md|htaccess|_headers)$/;
+const ALLOWED_DATA = [/(^|\/)admin\/config\.yml$/, /(^|\/)case-studies\/index\.json$/, /(^|\/)robots\.txt$/, /(^|\/)sitemap\.xml$/, /(^|\/)\.htaccess$/];
+const TEXT = /\.(html|css|js|json|yml|yaml|txt|xml|md|php|htaccess)$/;
 const SECRET_PATTERNS = [
   /AKIA[0-9A-Z]{16}/, /ghp_[A-Za-z0-9]{30,}/, /github_pat_[A-Za-z0-9_]{30,}/, /sk-[A-Za-z0-9]{32,}/, /xox[baprs]-[A-Za-z0-9-]{10,}/,
   /AIza[0-9A-Za-z_-]{30,}/, /-----BEGIN [A-Z ]*PRIVATE KEY-----/, /eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}/,
