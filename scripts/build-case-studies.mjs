@@ -40,15 +40,18 @@ function parseFrontMatter(raw) {
 }
 
 function render(template, vars) {
-  return template.replace(/\{\{(\w+)\}\}/g, (_, k) => (k in vars ? vars[k] : ''));
+  // {{root}} is substituted last so it also applies inside the footer partial
+  const out = template.replace(/\{\{(\w+)\}\}/g, (_, k) => (k in vars ? vars[k] : (k === 'root' ? '{{root}}' : '')));
+  return out.replace(/\{\{root\}\}/g, vars.root || '');
 }
+const rel = (root, p) => (p && p.startsWith('/') ? root + p.slice(1) : p);
 
-function card(p, index = 0) {
+function card(p, index = 0, level = 'h3', root = '../') {
   return `          <article class="post glass reveal" data-delay="${(index % 3) * 120}" data-category="${esc(slugify(p.category))}">
-            <a href="/case-studies/${esc(p.slug)}/" class="post__wrap">
-              <div class="post__media"><img src="${esc(p.image)}" alt="${esc(p.image_alt)}" width="1200" height="800" loading="lazy"><span class="tag">${esc(p.category)}</span></div>
+            <a href="${root}case-studies/${esc(p.slug)}/" class="post__wrap">
+              <div class="post__media"><img src="${esc(rel(root, p.image))}" alt="${esc(p.image_alt)}" width="1200" height="800" loading="lazy"><span class="tag">${esc(p.category)}</span></div>
               <div class="post__body">
-                <h3>${esc(p.title)}</h3>
+                <${level}>${esc(p.title)}</${level}>
                 <p class="post__excerpt">${esc(p.excerpt)}</p>
                 <div class="post__meta"><span>${esc(p.author)}</span><span><time datetime="${isoDate(p.date)}">${humanDate(p.date)}</time></span><span>${p.reading_time || 5} min read</span><i aria-hidden="true">→</i></div>
               </div>
@@ -102,6 +105,7 @@ async function main() {
       inLanguage: 'en-GB',
     });
     const html = render(postTpl, {
+      root: '../../',
       site_url: SITE_URL,
       slug: p.slug,
       title: esc(p.title),
@@ -110,7 +114,7 @@ async function main() {
       seo_description: esc(p.seo_description || p.excerpt),
       category: esc(p.category),
       author: esc(p.author || 'Quantact Partners'),
-      image: esc(p.image),
+      image: esc(rel('../../', p.image)),
       image_alt: esc(p.image_alt),
       date_iso: p.date,
       date_human: humanDate(p.date),
@@ -137,9 +141,10 @@ async function main() {
   const categories = [...new Set(live.map((p) => p.category))].sort();
   const filterButtons = categories.map((c) => `<button type="button" class="chip" data-filter="${esc(slugify(c))}">${esc(c)}</button>`).join('\n          ');
   await writeFile(path.join(OUT, 'index.html'), render(indexTpl, {
+    root: '../',
     site_url: SITE_URL,
     filter_buttons: filterButtons,
-    cards: live.map((p, i) => card(p, i)).join('\n'),
+    cards: live.map((p, i) => card(p, i, 'h2', '../')).join('\n'),
     footer,
   }));
 
@@ -160,7 +165,7 @@ async function main() {
   ];
   for (const pg of legal) {
     const body = await readFile(path.join(TEMPLATES, pg.body), 'utf8');
-    await writeFile(path.join(ROOT, pg.file), render(pageTpl, { site_url: SITE_URL, path: pg.file, title: pg.title, description: pg.description, body, footer }));
+    await writeFile(path.join(ROOT, pg.file), render(pageTpl, { root: '', site_url: SITE_URL, path: pg.file, title: pg.title, description: pg.description, body, footer }));
   }
 
   const urls = [

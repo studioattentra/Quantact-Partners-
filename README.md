@@ -1,4 +1,4 @@
-# Quantact Partners — M. Umer Ijaz
+# Quantact Partners — M. Umer Aijaz
 
 Single-page portfolio site for an accounting and advisory practice.
 Glassmorphism interface over live WebGL backdrops built with Three.js.
@@ -37,4 +37,4 @@ assets/vendor/        Three.js (MIT)
 
 ## Contact details
 
-Edit the email, phone and location in `index.html` (search for `mumeraijaz` and `+92 336`).
+Search for `[FIRM_EMAIL]` and `[CALENDLY_LINK]` across the repository and replace them once the firm mailbox and booking link are confirmed. Case studies are managed at `/admin/`; see `CHANGES.md`.

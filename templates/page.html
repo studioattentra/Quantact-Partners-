@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/assets/css/style.css">
-  <link rel="icon" type="image/png" href="/assets/img/logo.png">
+  <link rel="stylesheet" href="{{root}}assets/css/style.css">
+  <link rel="icon" type="image/png" href="{{root}}assets/img/logo.png">
 </head>
 <body class="page">
 
@@ -19,22 +19,22 @@
 
   <header class="nav is-scrolled" id="nav">
     <div class="nav__inner">
-      <a href="/" class="brand" aria-label="Quantact Partners home">
-        <img src="/assets/img/logo.png" alt="" class="brand__mark">
+      <a href="{{root}}" class="brand" aria-label="Quantact Partners home">
+        <img src="{{root}}assets/img/logo.png" alt="" class="brand__mark">
         <span class="brand__text">
           <span class="brand__name">Quantact</span>
           <span class="brand__sub">Partners</span>
         </span>
       </a>
       <nav class="nav__links" aria-label="Primary">
-        <a href="/">Home</a>
-        <a href="/#services">Services</a>
-        <a href="/#calculators">Calculators</a>
-        <a href="/case-studies/">Case Studies</a>
-        <a href="/#about">About</a>
+        <a href="{{root}}">Home</a>
+        <a href="{{root}}#services">Services</a>
+        <a href="{{root}}#calculators">Calculators</a>
+        <a href="{{root}}case-studies/">Case Studies</a>
+        <a href="{{root}}#about">About</a>
       </nav>
       <div class="nav__actions">
-        <a href="/#contact" class="btn btn--outline btn--sm">Discuss your accounting needs</a>
+        <a href="{{root}}#contact" class="btn btn--outline btn--sm">Discuss your accounting needs</a>
         <button class="nav__burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
           <span></span><span></span>
         </button>
@@ -43,20 +43,20 @@
   </header>
 
   <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-    <a href="/">Home</a>
-    <a href="/#services">Services</a>
-    <a href="/#calculators">Calculators</a>
-    <a href="/case-studies/">Case Studies</a>
-    <a href="/#about">About</a>
-    <a href="/#contact">Discuss your accounting needs</a>
+    <a href="{{root}}">Home</a>
+    <a href="{{root}}#services">Services</a>
+    <a href="{{root}}#calculators">Calculators</a>
+    <a href="{{root}}case-studies/">Case Studies</a>
+    <a href="{{root}}#about">About</a>
+    <a href="{{root}}#contact">Discuss your accounting needs</a>
   </div>
 
-  <main class="page__main">
+  <main class="page__main" id="top">
 {{body}}
   </main>
 
 {{footer}}
 
-  <script src="/assets/js/main.js" defer></script>
+  <script src="{{root}}assets/js/main.js" defer></script>
 </body>
 </html>
