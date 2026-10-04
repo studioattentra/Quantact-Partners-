@@ -6,7 +6,6 @@
      silk   · soft folds behind the statistics band
      office · glass panels and dusk glow for the about image
      smoke  · slow vapour for the call-to-action panel
-     still  · single-frame renders for the article covers
    ========================================================= */
 
 import * as THREE from '../vendor/three.module.min.js';
@@ -18,7 +17,7 @@ const PALETTE = {
   charcoal: new THREE.Color('#1F2523'),
 };
 
-const VARIANTS = { hero: 0, water: 1, silk: 2, office: 3, smoke: 4, still: 5 };
+const VARIANTS = { hero: 0, water: 1, silk: 2, office: 3, smoke: 4 };
 
 const VERTEX = /* glsl */`
   varying vec2 vUv;
@@ -420,31 +419,6 @@ class LiveScene {
   }
 }
 
-/* --------------------------------------------- still renderer */
-let stillRenderer = null;
-function renderStill(canvas, seed) {
-  const w = Math.max(2, canvas.clientWidth || 600);
-  const h = Math.max(2, canvas.clientHeight || 300);
-  const scale = Math.min(window.devicePixelRatio || 1, 1.5);
-  if (!stillRenderer) {
-    stillRenderer = new THREE.WebGLRenderer({ antialias: false, alpha: false, preserveDrawingBuffer: true });
-  }
-  stillRenderer.setPixelRatio(1);
-  stillRenderer.setSize(Math.round(w * scale), Math.round(h * scale), false);
-  const uniforms = makeUniforms(VARIANTS.still, seed, 1);
-  uniforms.uRes.value.set(Math.round(w * scale), Math.round(h * scale));
-  uniforms.uTime.value = seed;
-  const scene = new THREE.Scene();
-  const quad = makeQuad(uniforms);
-  scene.add(quad);
-  stillRenderer.render(scene, new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1));
-  canvas.width = Math.round(w * scale);
-  canvas.height = Math.round(h * scale);
-  canvas.getContext('2d').drawImage(stillRenderer.domElement, 0, 0);
-  quad.geometry.dispose();
-  quad.material.dispose();
-}
-
 /* ------------------------------------------------------ bootstrap */
 function supportsWebGL() {
   try {
@@ -482,14 +456,6 @@ function init() {
 
   document.querySelectorAll('canvas[data-scene]').forEach((canvas) => {
     const key = canvas.dataset.scene;
-    if (key.startsWith('still')) {
-      const n = parseFloat(key.split('-')[1] || '1');
-      const draw = () => renderStill(canvas, 4.3 * n + 1.7);
-      draw();
-      let tid;
-      new ResizeObserver(() => { clearTimeout(tid); tid = setTimeout(draw, 200); }).observe(canvas.parentElement);
-      return;
-    }
     const opts = config[key];
     if (!opts) return;
     new LiveScene(canvas, opts);

@@ -11,9 +11,7 @@
   <meta property="og:image" content="https://www.quantactpartners.co.uk/assets/img/case-ecommerce-vat.jpg">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#1F2523">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="icon" type="image/png" href="assets/img/logo.png">
   <link rel="apple-touch-icon" href="assets/img/logo.png">
@@ -698,15 +696,15 @@
               <div class="enquiry__grid">
                 <div class="field">
                   <label for="eq-name">Name</label>
-                  <input id="eq-name" name="name" type="text" autocomplete="name" required>
+                  <input id="eq-name" name="name" type="text" autocomplete="name" maxlength="80" required>
                 </div>
                 <div class="field">
                   <label for="eq-email">Business email</label>
-                  <input id="eq-email" name="email" type="email" autocomplete="email" required>
+                  <input id="eq-email" name="email" type="email" autocomplete="email" maxlength="120" inputmode="email" required>
                 </div>
                 <div class="field">
                   <label for="eq-company">Company <span class="optional">optional</span></label>
-                  <input id="eq-company" name="company" type="text" autocomplete="organization">
+                  <input id="eq-company" name="company" type="text" autocomplete="organization" maxlength="120">
                 </div>
                 <div class="field">
                   <label for="eq-service">Service interest</label>
@@ -725,7 +723,7 @@
                 </div>
                 <div class="field field--full">
                   <label for="eq-message">Message</label>
-                  <textarea id="eq-message" name="message" rows="4" required placeholder="A few lines about your business and what you need help with. Please don't include financial documents or account details."></textarea>
+                  <textarea id="eq-message" name="message" rows="4" maxlength="2000" required placeholder="A few lines about your business and what you need help with. Please don't include financial documents or account details."></textarea>
                 </div>
                 <div class="field field--full field--check">
                   <label>

@@ -453,12 +453,19 @@
     };
     enquiry.querySelectorAll('input, select, textarea').forEach((el) => el.addEventListener('input', () => fieldError(el, '')));
 
+    let sending = false, lastSent = 0;
+    const submitBtn = enquiry.querySelector('button[type="submit"]');
     enquiry.addEventListener('submit', async (e) => {
       e.preventDefault();
       status.classList.remove('is-error');
+      if (sending) return;
+      if (Date.now() - lastSent < 30000) { status.textContent = 'Your enquiry was just sent. Please wait a moment before sending another.'; return; }
       if (!validate()) { status.textContent = 'Please check the highlighted fields.'; status.classList.add('is-error'); return; }
       if (enquiry.elements.website.value) return; // honeypot
+      sending = true; submitBtn.disabled = true;
       const data = new FormData(enquiry);
+      // trim and cap every value client-side as well (the host-side handler is the real limit)
+      for (const [k, v] of Array.from(data.entries())) if (typeof v === 'string') data.set(k, v.trim().slice(0, k === 'message' ? 2000 : 160));
       status.textContent = 'Sending…';
       // 1) hosting form handler (Netlify Forms picks up data-netlify forms automatically)
       try {
@@ -469,6 +476,7 @@
           if (!/<html/i.test(text) || /netlify/i.test(res.headers.get('server') || '') || /success/i.test(text.slice(0, 600))) {
             status.textContent = 'Thank you. Your enquiry has been sent; we reply within 24 hours.';
             enquiry.reset();
+            lastSent = Date.now(); sending = false; submitBtn.disabled = false;
             return;
           }
         }
@@ -479,6 +487,7 @@
         `Name: ${data.get('name')}\nBusiness email: ${data.get('email')}\nCompany: ${data.get('company') || '-'}\nService interest: ${data.get('service')}\n\n${data.get('message')}\n\nConsent to contact: yes`);
       window.location.href = `mailto:${FIRM_EMAIL}?subject=${subject}&body=${body}`;
       status.textContent = 'Your email app should open with the enquiry filled in. If it does not, email us at ' + FIRM_EMAIL + '.';
+      lastSent = Date.now(); sending = false; submitBtn.disabled = false;
     });
   }
 
