@@ -13,12 +13,7 @@ name: Build and deploy to Hostinger
 
 on:
   push:
-    # `main` is the intended production branch. The second entry keeps the
-    # pipeline working until the repository's default branch is renamed to
-    # main (HOSTINGER.md, Part A) — remove it after that.
-    branches:
-      - main
-      - claude/accountant-portfolio-glassmorphism-rofnks
+    branches: [main]
     paths-ignore:
       - "case-studies/**"
       - "privacy.html"
