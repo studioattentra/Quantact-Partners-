@@ -8,7 +8,7 @@ Allow about 45 minutes the first time. Everything below is a one-off.
 
 ## Part A — GitHub (10 minutes)
 
-1. **Repository:** `github.com/studioattentra/quantact-partners`, default branch `main`. The deploy workflow and the admin editor both work from `main`.
+1. **Repository:** `github.com/studioattentra/Quantact-Partners-`, default branch `main`. The deploy workflow and the admin editor both work from `main`.
 2. **Enable Actions.** *Actions* tab → enable workflows if prompted. The workflow is `.github/workflows/deploy-hostinger.yml`.
 3. **Run it once.** *Actions → Build and deploy to Hostinger → Run workflow*. When it finishes, a new branch named **`hostinger`** exists containing only the deployable files. This branch is what Hostinger will pull.
 4. **Protect `main`** (recommended): *Settings → Branches → Add rule*: block force-pushes and deletions. Turn on *Settings → Code security*: secret scanning and Dependabot alerts.
@@ -55,7 +55,7 @@ domains/your-domain.co.uk/
 
 1. hPanel → *Websites → Manage → Advanced → Git*.
 2. **Create a new repository**:
-   - Repository: `https://github.com/studioattentra/quantact-partners.git` (for a private repo, click *Generate SSH key* in the same screen, add that key to the GitHub repository under *Settings → Deploy keys*, and use the SSH URL instead).
+   - Repository: `https://github.com/studioattentra/Quantact-Partners-.git` (for a private repo, click *Generate SSH key* in the same screen, add that key to the GitHub repository under *Settings → Deploy keys*, and use the SSH URL instead).
    - Branch: **`hostinger`**
    - Directory: leave empty (deploys into `public_html`).
 3. Click *Create*, then *Deploy*. `public_html` now contains the site, including the hidden `.htaccess`.

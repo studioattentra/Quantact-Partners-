@@ -8,7 +8,7 @@
 
 backend:
   name: github
-  repo: studioattentra/quantact-partners
+  repo: studioattentra/Quantact-Partners-
   branch: main
   base_url: https://www.quantactpartners.co.uk   # change to the live domain (no trailing slash)
   auth_endpoint: admin/oauth/auth.php
