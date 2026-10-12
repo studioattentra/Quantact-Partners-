@@ -430,7 +430,7 @@
   const enquiry = $('#enquiryForm');
   if (enquiry) {
     const status = $('#enquiryStatus');
-    const FIRM_EMAIL = 'mumeraijaz.writer@gmail.com'; // delivery address for the email fallback; change here when the firm mailbox goes live
+    const FIRM_EMAIL = 'info@quantactpartners.com'; // delivery address for the email fallback; change here when the firm mailbox goes live
     const fieldError = (el, msg) => {
       let err = el.parentElement.querySelector('.field__error');
       if (!msg) { if (err) err.remove(); el.removeAttribute('aria-invalid'); el.removeAttribute('aria-describedby'); return; }
